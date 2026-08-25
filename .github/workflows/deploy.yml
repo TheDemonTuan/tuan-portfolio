@@ -112,7 +112,8 @@ jobs:
         run: |
           set -euo pipefail
           scp -i ~/.ssh/id_ed25519 -P "$VPS_PORT" -o BatchMode=yes \
-            compose.yml scripts/deploy.sh "$VPS_USER@$VPS_HOST:/opt/tuan-portfolio/"
+            compose.yml scripts/deploy.sh scripts/image-retention.sh \
+            "$VPS_USER@$VPS_HOST:/opt/tuan-portfolio/"
           ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" -o BatchMode=yes \
             "$VPS_USER@$VPS_HOST" 'chmod 755 /opt/tuan-portfolio/deploy.sh'
       - name: Log VPS in to GHCR

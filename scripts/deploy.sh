@@ -6,11 +6,15 @@ COMPOSE="$APP_DIR/compose.yml"
 DEPLOY_ENV="$APP_DIR/.deploy.env"
 LOCK_FILE="$APP_DIR/.deploy.lock"
 IMAGE_STATE="$APP_DIR/.deployed-image"
+PREVIOUS_IMAGE_STATE="$APP_DIR/.previous-image"
 READY_TIMEOUT="${READY_TIMEOUT:-90}"
 
 log() { printf '%s  %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$*"; }
 die() { log "ERROR: $*" >&2; exit 1; }
 dc() { docker compose --env-file "$DEPLOY_ENV" -f "$COMPOSE" "$@"; }
+
+# shellcheck source=scripts/image-retention.sh
+source "$APP_DIR/image-retention.sh"
 
 health_status() {
   docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' \
@@ -19,6 +23,7 @@ health_status() {
 
 status() {
   printf 'image=%s\n' "$(cat "$IMAGE_STATE" 2>/dev/null || echo unknown)"
+  printf 'previous_image=%s\n' "$(cat "$PREVIOUS_IMAGE_STATE" 2>/dev/null || echo none)"
   printf 'health=%s\n' "$(health_status)"
   dc ps
 }
@@ -66,7 +71,17 @@ for ((elapsed = 0; elapsed < READY_TIMEOUT; elapsed += 2)); do
   if [[ "$(health_status)" == "healthy" ]] && \
     curl --fail --silent --show-error --max-time 5 http://127.0.0.1:18080/healthz >/dev/null; then
     printf '%s\n' "$IMAGE_REF" > "$IMAGE_STATE"
+    if [[ -n "$PREVIOUS_IMAGE" && "$PREVIOUS_IMAGE" != "$IMAGE_REF" ]]; then
+      printf '%s\n' "$PREVIOUS_IMAGE" > "$PREVIOUS_IMAGE_STATE"
+    fi
     trap - ERR
+    IMAGE_REPOSITORY="${IMAGE_REF%@sha256:*}"
+    RETAINED_PREVIOUS_IMAGE="$(cat "$PREVIOUS_IMAGE_STATE" 2>/dev/null || true)"
+    if [[ -n "$RETAINED_PREVIOUS_IMAGE" && "$RETAINED_PREVIOUS_IMAGE" != "$IMAGE_REF" ]]; then
+      prune_repository_images "$IMAGE_REPOSITORY" "$IMAGE_REF" "$RETAINED_PREVIOUS_IMAGE"
+    else
+      prune_repository_images "$IMAGE_REPOSITORY" "$IMAGE_REF"
+    fi
     log "Deployment healthy: $IMAGE_REF"
     status
     exit 0
