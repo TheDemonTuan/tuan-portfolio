@@ -31,8 +31,9 @@ docker compose up -d
 curl --fail http://127.0.0.1:18080/healthz
 ```
 
-The container serves static files on `127.0.0.1:18080`; it is intentionally inaccessible from
-public interfaces. Its Compose project, Docker network, deployment state, and ingress are kept
+The site container serves static files on `127.0.0.1:18080`; it is intentionally inaccessible
+from public interfaces. A dedicated Cloudflare Tunnel connector reaches it through the private
+Compose network. The Compose project, network, tunnel, deployment state, and ingress are kept
 independent from every other application on the VPS.
 
 ## Continuous deployment
@@ -44,8 +45,11 @@ Every push to `main` runs `.github/workflows/deploy.yml`:
 3. Publish `ghcr.io/thedemontuan/tuan-portfolio` to GitHub Container Registry.
 4. Deploy the immutable image digest to `/opt/tuan-portfolio` over SSH.
 5. Wait for the portfolio container's loopback health check.
+6. Keep the dedicated portfolio tunnel connector running on the same private Compose network.
 
-The `production` GitHub environment holds `VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and
+The connector token is stored only as `/opt/tuan-portfolio/.tunnel-token` with mode `0600`; it is
+never committed or copied by the deployment workflow. The `production` GitHub environment holds
+`VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and
 `VPS_KNOWN_HOSTS`. The workflow uses the short-lived `GITHUB_TOKEN` for each image pull and logs
 the VPS out of GitHub Container Registry afterward.
 
