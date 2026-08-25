@@ -55,7 +55,9 @@ the VPS out of GitHub Container Registry afterward.
 
 The production Compose file reads `PORTFOLIO_IMAGE` from `/opt/tuan-portfolio/.deploy.env`.
 `scripts/deploy.sh` serializes deploys with `flock`, rejects mutable image references, records the
-active digest, and rolls back to the previous healthy digest when a replacement fails.
+active and previous healthy digests, rolls back when a replacement fails, and removes older
+portfolio images only after a successful health check. It never runs a host-wide image or builder
+prune.
 
 Public routing must use a portfolio-owned ingress with separate credentials and lifecycle. Never
 attach this Compose project to another application's Docker network, proxy, or tunnel connector.
