@@ -53,11 +53,12 @@ The production Compose file reads `PORTFOLIO_IMAGE` from `/opt/tuan-portfolio/.d
 `scripts/deploy.sh` serializes deploys with `flock`, rejects mutable image references, records the
 active digest, and rolls back to the previous healthy digest when a replacement fails.
 
-A dedicated `cloudflared` sidecar in the portfolio Compose project connects the remotely managed
-`tuannguyenviet.site` ingress directly to `http://portfolio:8080`. This keeps portfolio routing
-independent from OmniRoute's Caddyfile and deployment lifecycle. The sidecar reuses the existing
-connector token from `/opt/tuan-portfolio/.tunnel.env`; routine deploys never transfer that token
-through GitHub Actions.
+A dedicated `cloudflared` sidecar in the portfolio Compose project serves the remotely managed
+tunnel configuration. The portfolio container owns the network alias `caddy`, so the existing
+`http://caddy:8080` ingress resolves locally to the portfolio rather than depending on OmniRoute's
+Caddyfile or deployment lifecycle. The sidecar reuses the existing connector token from
+`/opt/tuan-portfolio/.tunnel.env`; routine deploys never transfer that token through GitHub
+Actions.
 
 ## Rollback
 
