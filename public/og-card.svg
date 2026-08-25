@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#edf2f4" stroke-opacity=".06"/></pattern>
+    <radialGradient id="glow"><stop stop-color="#b6ff46" stop-opacity=".15"/><stop offset="1" stop-color="#b6ff46" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#070a0f"/><rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="970" cy="315" r="280" fill="url(#glow)"/><circle cx="970" cy="315" r="190" fill="none" stroke="#edf2f4" stroke-opacity=".12"/><circle cx="970" cy="315" r="125" fill="none" stroke="#b6ff46" stroke-opacity=".35" stroke-dasharray="8 10"/>
+  <text x="970" y="350" text-anchor="middle" font-family="Arial,sans-serif" font-size="104" font-weight="700" fill="#edf2f4" letter-spacing="-10">NT</text>
+  <rect x="72" y="75" width="52" height="52" fill="none" stroke="#b6ff46"/><text x="98" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#b6ff46">NT</text>
+  <text x="72" y="235" font-family="Arial,sans-serif" font-size="20" font-weight="700" fill="#b6ff46" letter-spacing="5">PORTFOLIO / 2026</text>
+  <text x="72" y="335" font-family="Arial,sans-serif" font-size="74" font-weight="700" fill="#edf2f4">NGUYỄN VIẾT TUẤN</text>
+  <text x="72" y="403" font-family="Arial,sans-serif" font-size="34" fill="#8c99a5">Building digital products with intent.</text>
+  <path d="M72 489h570" stroke="#edf2f4" stroke-opacity=".15"/><text x="72" y="540" font-family="Arial,sans-serif" font-size="18" fill="#8c99a5" letter-spacing="3">TUANNGUYENVIET.SITE</text>
+</svg>

@@ -1,0 +1,27 @@
+services:
+  portfolio:
+    build:
+      context: .
+    image: tuan-portfolio:latest
+    container_name: tuan-portfolio
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:18080:8080"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:size=16m,mode=1777
+      - /var/run:size=1m,mode=1777
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    mem_limit: 128m
+    cpus: 0.50
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
