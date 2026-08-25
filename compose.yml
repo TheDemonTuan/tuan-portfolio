@@ -29,3 +29,32 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  tunnel:
+    image: cloudflare/cloudflared:2026.8.2
+    container_name: tuan-portfolio-tunnel
+    restart: unless-stopped
+    user: "1000:1000"
+    command: tunnel --no-autoupdate run --token-file /run/secrets/tunnel-token
+    depends_on:
+      portfolio:
+        condition: service_healthy
+    secrets:
+      - tunnel-token
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    mem_limit: 128m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+secrets:
+  tunnel-token:
+    file: ./.tunnel-token
