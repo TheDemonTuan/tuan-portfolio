@@ -38,11 +38,13 @@ function applyLanguage(language: Language) {
 export default function Navigation() {
   const [language, setLanguage] = useState<Language>("vi");
   const [open, setOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const text = copy[language];
 
   useEffect(() => {
     const current = document.documentElement.dataset.language;
     if (current === "en") setLanguage("en");
+    setHydrated(true);
   }, []);
 
   const closeMenu = () => setOpen(false);
@@ -93,6 +95,7 @@ export default function Navigation() {
             className="language-toggle"
             type="button"
             aria-label={text.language}
+            disabled={!hydrated}
             onClick={toggleLanguage}
           >
             <span className={language === "vi" ? "active" : ""}>VI</span>

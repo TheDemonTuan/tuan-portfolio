@@ -211,6 +211,11 @@ html[data-language="en"] [data-copy="en"] {
   color: var(--accent);
 }
 
+.language-toggle:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .menu-toggle {
   display: none;
   width: 42px;
