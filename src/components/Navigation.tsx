@@ -57,7 +57,12 @@ export default function Navigation() {
   return (
     <header className="site-header">
       <nav className="nav shell" aria-label={text.navigation}>
-        <a className="brand" href="#top" onClick={closeMenu} aria-label="Nguyễn Viết Tuấn — Home">
+        <a
+          className="brand"
+          href="#top"
+          onClick={closeMenu}
+          aria-label="NT — Nguyễn Viết Tuấn — Home"
+        >
           <span className="brand-mark" aria-hidden="true">
             NT
           </span>

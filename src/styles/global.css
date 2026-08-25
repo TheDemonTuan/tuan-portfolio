@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
-
 :root {
   --bg: #070a0f;
   --bg-soft: #0b1017;
@@ -526,7 +524,7 @@ h2 em {
   position: absolute;
   top: 36px;
   right: 0;
-  color: rgba(237, 242, 244, 0.15);
+  color: #7d8791;
   font-family: var(--display);
   font-size: 11px;
   letter-spacing: 0.14em;
