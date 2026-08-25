@@ -32,7 +32,8 @@ curl --fail http://127.0.0.1:18080/healthz
 ```
 
 The container serves static files on `127.0.0.1:18080`; it is intentionally inaccessible from
-public interfaces. A reverse proxy or tunnel should connect to that loopback endpoint.
+public interfaces. On the VPS it also joins the existing external `omniroute_edge` Docker network
+so Caddy can reach it by the `tuan-portfolio` service name without exposing another public port.
 
 ## VPS deployment
 
@@ -45,7 +46,7 @@ docker compose build
 docker compose up -d
 ```
 
-Caddy routes only `Host: tuannguyenviet.site` to `host.docker.internal:18080`. Cloudflare Tunnel
+Caddy routes only `Host: tuannguyenviet.site` to `tuan-portfolio:8080`. Cloudflare Tunnel
 then maps the public hostname to Caddy. Cloudflare credentials are deployment inputs and must
 never be copied into this repository or image.
 

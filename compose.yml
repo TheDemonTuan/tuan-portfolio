@@ -8,6 +8,9 @@ services:
     init: true
     ports:
       - "127.0.0.1:18080:8080"
+    networks:
+      - default
+      - edge
     read_only: true
     tmpfs:
       - /var/cache/nginx:size=16m,mode=1777
@@ -25,3 +28,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+networks:
+  edge:
+    external: true
+    name: omniroute_edge
