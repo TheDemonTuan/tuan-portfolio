@@ -49,7 +49,6 @@ rollback() {
     log "Deployment failed; rolling back to $PREVIOUS_IMAGE"
     printf 'PORTFOLIO_IMAGE=%s\n' "$PREVIOUS_IMAGE" > "$DEPLOY_ENV"
     dc up -d --no-deps portfolio || true
-    dc up -d --no-deps cloudflared || true
   fi
   exit "$exit_code"
 }
@@ -60,7 +59,6 @@ docker pull "$IMAGE_REF"
 printf 'PORTFOLIO_IMAGE=%s\n' "$IMAGE_REF" > "$DEPLOY_ENV"
 
 dc up -d --no-deps --force-recreate portfolio
-dc up -d --no-deps cloudflared
 
 for ((elapsed = 0; elapsed < READY_TIMEOUT; elapsed += 2)); do
   if [[ "$(health_status)" == "healthy" ]] && \

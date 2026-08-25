@@ -32,8 +32,8 @@ curl --fail http://127.0.0.1:18080/healthz
 ```
 
 The container serves static files on `127.0.0.1:18080`; it is intentionally inaccessible from
-public interfaces. On the VPS it also joins the existing external `omniroute_edge` Docker network
-so Caddy can reach it by the `tuan-portfolio` service name without exposing another public port.
+public interfaces. Its Compose project, Docker network, deployment state, and ingress are kept
+independent from every other application on the VPS.
 
 ## Continuous deployment
 
@@ -43,7 +43,7 @@ Every push to `main` runs `.github/workflows/deploy.yml`:
 2. Build the ARM64 container on a native GitHub runner.
 3. Publish `ghcr.io/thedemontuan/tuan-portfolio` to GitHub Container Registry.
 4. Deploy the immutable image digest to `/opt/tuan-portfolio` over SSH.
-5. Wait for container health, verify public portfolio routes, and recheck OmniRoute health.
+5. Wait for the portfolio container's loopback health check.
 
 The `production` GitHub environment holds `VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and
 `VPS_KNOWN_HOSTS`. The workflow uses the short-lived `GITHUB_TOKEN` for each image pull and logs
@@ -53,17 +53,16 @@ The production Compose file reads `PORTFOLIO_IMAGE` from `/opt/tuan-portfolio/.d
 `scripts/deploy.sh` serializes deploys with `flock`, rejects mutable image references, records the
 active digest, and rolls back to the previous healthy digest when a replacement fails.
 
-A dedicated `cloudflared` sidecar in the portfolio Compose project serves the remotely managed
-tunnel configuration. The portfolio container owns the network alias `caddy`, so the existing
-`http://caddy:8080` ingress resolves locally to the portfolio rather than depending on OmniRoute's
-Caddyfile or deployment lifecycle. The sidecar reuses the existing connector token from
-`/opt/tuan-portfolio/.tunnel.env`; routine deploys never transfer that token through GitHub
-Actions.
+Public routing must use a portfolio-owned ingress with separate credentials and lifecycle. Never
+attach this Compose project to another application's Docker network, proxy, or tunnel connector.
 
 ## Rollback
 
-1. Restore the previous Cloudflare Tunnel ingress and DNS snapshot.
-2. Restore and validate the previous Caddyfile, then reload Caddy.
-3. Run `docker compose down` inside `/opt/tuan-portfolio`.
+Deployments roll back automatically when the replacement container fails its local health check.
+For a manual rollback, redeploy an earlier immutable digest with `scripts/deploy.sh`. Removing the
+portfolio uses its own Compose project only:
 
-This does not stop or modify OmniRoute application containers.
+```bash
+cd /opt/tuan-portfolio
+docker compose --env-file .deploy.env down
+```
