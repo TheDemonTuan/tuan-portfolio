@@ -12,7 +12,7 @@
     "preview": "astro preview",
     "check": "astro check && prettier --check .",
     "format": "prettier --write .",
-    "test": "playwright test",
+    "test": "playwright test && bash tests/deploy-script.test.sh",
     "astro": "astro"
   },
   "dependencies": {

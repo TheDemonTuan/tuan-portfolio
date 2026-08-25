@@ -75,6 +75,7 @@ export default function Navigation() {
           aria-expanded={open}
           aria-controls="navigation-links"
           aria-label={open ? text.close : text.open}
+          disabled={!hydrated}
           onClick={() => setOpen((value) => !value)}
         >
           <span></span>

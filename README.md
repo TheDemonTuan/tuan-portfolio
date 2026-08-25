@@ -35,20 +35,26 @@ The container serves static files on `127.0.0.1:18080`; it is intentionally inac
 public interfaces. On the VPS it also joins the existing external `omniroute_edge` Docker network
 so Caddy can reach it by the `tuan-portfolio` service name without exposing another public port.
 
-## VPS deployment
+## Continuous deployment
 
-The production directory is `/opt/tuan-portfolio`. Sync the repository without `.git`,
-`node_modules`, test output, or credentials, then run:
+Every push to `main` runs `.github/workflows/deploy.yml`:
 
-```bash
-cd /opt/tuan-portfolio
-docker compose build
-docker compose up -d
-```
+1. Type-check and build the static site.
+2. Build the ARM64 container on a native GitHub runner.
+3. Publish `ghcr.io/thedemontuan/tuan-portfolio` to GitHub Container Registry.
+4. Deploy the immutable image digest to `/opt/tuan-portfolio` over SSH.
+5. Wait for container health, verify public portfolio routes, and recheck OmniRoute health.
 
-Caddy routes only `Host: tuannguyenviet.site` to `tuan-portfolio:8080`. Cloudflare Tunnel
-then maps the public hostname to Caddy. Cloudflare credentials are deployment inputs and must
-never be copied into this repository or image.
+The `production` GitHub environment holds `VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and
+`VPS_KNOWN_HOSTS`. The workflow uses the short-lived `GITHUB_TOKEN` for each image pull and logs
+the VPS out of GitHub Container Registry afterward.
+
+The production Compose file reads `PORTFOLIO_IMAGE` from `/opt/tuan-portfolio/.deploy.env`.
+`scripts/deploy.sh` serializes deploys with `flock`, rejects mutable image references, records the
+active digest, and rolls back to the previous healthy digest when a replacement fails.
+
+Caddy routes only `Host: tuannguyenviet.site` to `tuan-portfolio:8080`. Cloudflare Tunnel then
+maps the public hostname to Caddy. Cloudflare credentials are not needed by routine deploys.
 
 ## Rollback
 

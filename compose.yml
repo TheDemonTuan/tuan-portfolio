@@ -1,8 +1,6 @@
 services:
   portfolio:
-    build:
-      context: .
-    image: tuan-portfolio:latest
+    image: ${PORTFOLIO_IMAGE:-ghcr.io/thedemontuan/tuan-portfolio:latest}
     container_name: tuan-portfolio
     restart: unless-stopped
     init: true
@@ -23,6 +21,12 @@ services:
     pids_limit: 100
     mem_limit: 128m
     cpus: 0.50
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 6
     logging:
       driver: json-file
       options:
