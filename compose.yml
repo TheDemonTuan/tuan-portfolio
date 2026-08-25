@@ -8,7 +8,6 @@ services:
       - "127.0.0.1:18080:8080"
     networks:
       - default
-      - edge
     read_only: true
     tmpfs:
       - /var/cache/nginx:size=16m,mode=1777
@@ -33,7 +32,27 @@ services:
         max-size: "10m"
         max-file: "3"
 
-networks:
-  edge:
-    external: true
-    name: omniroute_edge
+  cloudflared:
+    image: cloudflare/cloudflared:2026.8.2
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    env_file:
+      - .tunnel.env
+    depends_on:
+      portfolio:
+        condition: service_healthy
+    networks:
+      - default
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    mem_limit: 128m
+    cpus: 0.25
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

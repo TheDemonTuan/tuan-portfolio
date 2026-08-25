@@ -139,9 +139,25 @@ jobs:
       - name: Verify public routes
         run: |
           set -euo pipefail
-          test "$(curl --fail --silent --output /dev/null --write-out '%{http_code}' https://tuannguyenviet.site/)" = 200
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' https://tuannguyenviet.site/missing-page)" = 404
-          curl --fail --silent https://omniroute.tuannguyenviet.site/api/monitoring/health | grep -q '"status":"healthy"'
+          verify() {
+            local expected="$1" url="$2"
+            for attempt in {1..12}; do
+              code="$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 15 "$url" || true)"
+              [[ "$code" == "$expected" ]] && return 0
+              echo "Attempt $attempt: $url returned $code, expected $expected"
+              sleep 5
+            done
+            return 1
+          }
+          verify 200 https://tuannguyenviet.site/
+          verify 404 https://tuannguyenviet.site/missing-page
+          for attempt in {1..12}; do
+            curl --fail --silent --max-time 15 \
+              https://omniroute.tuannguyenviet.site/api/monitoring/health | \
+              grep -q '"status":"healthy"' && break
+            [[ "$attempt" == 12 ]] && exit 1
+            sleep 5
+          done
       - name: Report deployment status
         if: always()
         env:
