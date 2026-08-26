@@ -1,0 +1,48 @@
+---
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import { site } from "../data/site";
+import { ui } from "../data/ui";
+import LangToggle from "./LangToggle.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  lang: Lang;
+  /** Locale-neutral path of the current page, used for the active state. */
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+
+const links = [
+  { href: "/work/", label: ui.nav.work[lang] },
+  { href: "/about/", label: ui.nav.about[lang] },
+  { href: "/colophon/", label: ui.nav.colophon[lang] },
+];
+---
+
+<header class="masthead page" role="banner">
+  <div class="masthead__bar">
+    <a class="masthead__name" href={localizePath("/", lang)}>{site.name}</a>
+
+    <nav class="masthead__nav" aria-label={ui.mainNav[lang]}>
+      <div class="masthead__links">
+        {
+          links.map((link) => (
+            <a
+              href={localizePath(link.href, lang)}
+              aria-current={path.startsWith(link.href) ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+      <div class="masthead__tools">
+        <LangToggle lang={lang} path={path} />
+        <ThemeToggle lang={lang} />
+      </div>
+    </nav>
+  </div>
+  <hr class="rule rule--double" />
+</header>

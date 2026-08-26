@@ -1,0 +1,40 @@
+---
+import type { Contribution } from "../data/contributions";
+import { AREA_LABEL, contributionDiff } from "../data/contributions";
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import DiffStat from "./DiffStat.astro";
+
+interface Props {
+  contribution: Contribution;
+  lang: Lang;
+}
+
+const { contribution, lang } = Astro.props;
+const diff = contributionDiff(contribution);
+const numbers = contribution.prs.map((pr) => `#${pr.number}`).join(" · ");
+const latest = contribution.prs.reduce((a, b) => (a.mergedAt > b.mergedAt ? a : b));
+---
+
+<a
+  class="entry"
+  href={localizePath(`/work/${contribution.slug}/`, lang)}
+  data-testid="contrib-entry"
+>
+  <div class="entry__top">
+    <span class="label">{AREA_LABEL[contribution.area][lang]} — {numbers}</span>
+    <span class="mono muted">{latest.mergedAt.replaceAll("-", ".")}</span>
+  </div>
+
+  <h3 class="entry__title">{contribution.headline[lang]}</h3>
+  <p class="entry__summary">{contribution.summary[lang]}</p>
+
+  <ul class="entry__commits">
+    {contribution.prs.map((pr) => <li>{pr.title}</li>)}
+  </ul>
+
+  <div class="entry__top" style="margin-top: var(--s-4)">
+    <DiffStat additions={diff.additions} deletions={diff.deletions} />
+    <span class="mono muted">{diff.files} files</span>
+  </div>
+</a>

@@ -1,0 +1,14 @@
+---
+interface Props {
+  additions: number;
+  deletions: number;
+  size?: "sm" | "lg";
+}
+
+const { additions, deletions, size = "sm" } = Astro.props;
+const format = (value: number) => value.toLocaleString("en-US");
+---
+
+<span class:list={["diff", size === "lg" && "diff--lg"]}>
+  <ins>+{format(additions)}</ins>{" "}<del>−{format(deletions)}</del>
+</span>

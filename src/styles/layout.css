@@ -1,0 +1,160 @@
+.page {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/*
+ * Rules run the full width of the viewport while the text stays inside its
+ * measure. That tension between the edge and the column is the whole look.
+ */
+.bleed {
+  margin-inline: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.rule {
+  border: 0;
+  border-top: var(--rule-w) solid var(--rule-soft);
+  margin: 0;
+}
+
+.rule--strong {
+  border-top-color: var(--rule);
+}
+
+.rule--double {
+  border-top: 3px double var(--rule);
+}
+
+/* The mono metadata column that sits outside the text measure. */
+.railed {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: var(--s-7);
+  align-items: start;
+}
+
+.railed > .rail {
+  position: sticky;
+  top: var(--s-5);
+}
+
+.section {
+  padding-block: var(--s-8);
+}
+
+.section__head {
+  position: relative;
+  margin-bottom: var(--s-6);
+}
+
+/*
+ * Hanging numerals. The heading keeps the true grid line and the number hangs
+ * into the page's own left padding beside it — close enough to read as an
+ * annotation of the heading, rather than stranded against the viewport edge.
+ * Only at widths where that padding actually exists; below, it sits above.
+ */
+.section__mark {
+  display: block;
+  margin-bottom: var(--s-2);
+}
+
+/*
+ * Only once the viewport is wider than the page box plus its gutters does room
+ * exist outside the measure to hang into. Narrower than that, the numeral
+ * stacks above the heading instead of being clipped off the left edge.
+ */
+@media (min-width: 1400px) {
+  .section__mark {
+    position: absolute;
+    left: calc(var(--s-5) * -1);
+    top: 0.62em;
+    margin-bottom: 0;
+    transform: translateX(-100%);
+    white-space: nowrap;
+  }
+}
+
+.stack-4 > * + * {
+  margin-top: var(--s-4);
+}
+.stack-5 > * + * {
+  margin-top: var(--s-5);
+}
+.stack-6 > * + * {
+  margin-top: var(--s-6);
+}
+.stack-7 > * + * {
+  margin-top: var(--s-7);
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose > * + * {
+  margin-top: var(--s-5);
+}
+
+/* One overscaled element per page, clipped by the viewport edge on purpose. */
+.overscale {
+  font-family: var(--mono);
+  font-size: var(--display-l);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.marginalia {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--ink-3);
+  border-top: var(--rule-w) solid var(--rule-soft);
+  padding-top: var(--s-3);
+  max-width: 34ch;
+}
+
+@media (min-width: 1240px) {
+  .marginalia--hang {
+    float: right;
+    width: 22ch;
+    margin: var(--s-1) calc(var(--s-8) * -1) var(--s-5) var(--s-7);
+  }
+}
+
+@media (max-width: 959px) {
+  .railed {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-5);
+  }
+
+  .railed > .rail {
+    position: static;
+  }
+
+  .section__head {
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .section__mark {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .section {
+    padding-block: var(--s-8);
+  }
+}
+
+@media (max-width: 639px) {
+  .section {
+    padding-block: var(--s-7);
+  }
+}

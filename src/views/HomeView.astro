@@ -1,0 +1,120 @@
+---
+import ContactList from "../components/ContactList.astro";
+import ContribEntry from "../components/ContribEntry.astro";
+import Icon from "../components/Icon.astro";
+import Prose from "../components/Prose.astro";
+import SectionHead from "../components/SectionHead.astro";
+import StackList from "../components/StackList.astro";
+import { contributions, OMNIROUTE, totals } from "../data/contributions";
+import { home } from "../data/copy";
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import { KIND_LABEL, personalWork } from "../data/personal-work";
+import { site } from "../data/site";
+import { ui } from "../data/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const n = (value: number) => value.toLocaleString("en-US");
+---
+
+<section class="hero page">
+  <div class="railed">
+    <div class="rail">
+      <p class="mono muted" style="margin: 0">
+        {site.location[lang]}<br />
+        {site.coords}<br />
+        {site.timezone}
+      </p>
+      <p class="label" style="margin: var(--s-4) 0 0">{site.availability[lang]}</p>
+    </div>
+
+    <div>
+      <h1 class="hero__headline">{home.headline[lang]}</h1>
+      <Prose nodes={home.lede[lang]} class="lede hero__lede" />
+    </div>
+  </div>
+</section>
+
+<div class="page">
+  <hr class="rule rule--strong bleed" />
+
+  <div class="statline" data-testid="statline">
+    <span class="overscale">+{n(totals.additions)}</span>
+    <div class="statline__figures">
+      <div class="statline__figure">
+        <span class="statline__value">{totals.prs}</span>
+        <span class="label">{ui.merged[lang]}</span>
+      </div>
+      <div class="statline__figure">
+        <span class="statline__value">−{n(totals.deletions)}</span>
+        <span class="label">deletions</span>
+      </div>
+      <div class="statline__figure">
+        <span class="statline__value">{totals.files}</span>
+        <span class="label">files</span>
+      </div>
+    </div>
+    <p class="mono muted" style="margin: 0; max-width: 30ch">
+      {OMNIROUTE.name} — {OMNIROUTE.license}, {n(OMNIROUTE.stars)} ★, {OMNIROUTE.contributors} contributors
+      <br />
+      <span class="label">{ui.asOf[lang]} {OMNIROUTE.statsAsOf}</span>
+    </p>
+  </div>
+
+  <hr class="rule rule--strong bleed" />
+</div>
+
+<section class="section page" aria-labelledby="selected">
+  <SectionHead mark="01" title={home.selectedTitle[lang]} id="selected" />
+  <p class="lede" style="margin-bottom: var(--s-6)">{home.selectedNote[lang]}</p>
+
+  {contributions.map((contribution) => <ContribEntry contribution={contribution} lang={lang} />)}
+
+  <p style="margin-top: var(--s-6)">
+    <a class="link-mono" href={localizePath("/work/", lang)}>
+      {ui.allContributions[lang]}
+      <Icon name="arrow" />
+    </a>
+  </p>
+</section>
+
+<section class="section page" aria-labelledby="own-work">
+  <SectionHead mark="02" title={home.personalTitle[lang]} id="own-work" />
+  <p class="marginalia" style="margin-bottom: var(--s-6)">{home.personalNote[lang]}</p>
+
+  <dl class="specs" data-testid="personal-work">
+    {
+      personalWork.map((project) => (
+        <>
+          <dt>{KIND_LABEL[project.kind][lang]}</dt>
+          <dd>
+            {project.url ? (
+              <a href={project.url} target="_blank" rel="noreferrer">
+                {project.title}
+              </a>
+            ) : (
+              project.title
+            )}
+            <br />
+            <span class="muted">{project.summary[lang]}</span>
+          </dd>
+        </>
+      ))
+    }
+  </dl>
+</section>
+
+<section class="section page" aria-labelledby="tools">
+  <SectionHead mark="03" title={home.stackTitle[lang]} id="tools" />
+  <p class="marginalia" style="margin-bottom: var(--s-6)">{home.stackNote[lang]}</p>
+  <StackList lang={lang} />
+</section>
+
+<section class="section page" id="contact" aria-labelledby="contact-title">
+  <SectionHead mark="04" title={home.contactTitle[lang]} id="contact-title" />
+  <ContactList lang={lang} />
+</section>

@@ -1,0 +1,23 @@
+---
+import { localizePath, otherLang } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import { ui } from "../data/ui";
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+const target = otherLang(lang);
+---
+
+<a
+  class="toggle"
+  href={localizePath(path, target)}
+  hreflang={target}
+  lang={target}
+  data-testid="lang-toggle"
+>
+  {ui.switchLanguage[lang]}
+</a>

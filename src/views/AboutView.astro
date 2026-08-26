@@ -1,0 +1,74 @@
+---
+import ContactList from "../components/ContactList.astro";
+import Prose from "../components/Prose.astro";
+import SectionHead from "../components/SectionHead.astro";
+import StackList from "../components/StackList.astro";
+import { about } from "../data/copy";
+import type { Lang } from "../data/i18n";
+import { site } from "../data/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<section class="hero page">
+  <div class="railed">
+    <div class="rail">
+      <dl class="specs" style="margin: 0">
+        <dt>Base</dt>
+        <dd>{site.location[lang]}</dd>
+        <dt>Coords</dt>
+        <dd>{site.coords}</dd>
+        <dt>Zone</dt>
+        <dd>{site.timezone}</dd>
+        <dt>Lang</dt>
+        <dd>{site.languages[lang]}</dd>
+        <dt>Status</dt>
+        <dd>{site.availability[lang]}</dd>
+      </dl>
+    </div>
+
+    <div>
+      <h1>{about.headline[lang]}</h1>
+      <div class="prose" style="margin-top: var(--s-6)">
+        {
+          about.bio.map((paragraph, index) => (
+            <Prose nodes={paragraph[lang]} class={index === 0 ? "lede" : undefined} />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section page" aria-labelledby="principles">
+  <SectionHead mark="01" title={about.principlesTitle[lang]} id="principles" />
+
+  <dl class="specs" data-testid="principles">
+    {
+      about.principles.map((principle, index) => (
+        <>
+          <dt>{String(index + 1).padStart(2, "0")}</dt>
+          <dd>
+            <strong>{principle.title[lang]}</strong>
+            <br />
+            <span class="muted">{principle.body[lang]}</span>
+          </dd>
+        </>
+      ))
+    }
+  </dl>
+</section>
+
+<section class="section page" aria-labelledby="about-tools">
+  <SectionHead mark="02" title={about.stackTitle[lang]} id="about-tools" />
+  <StackList lang={lang} />
+</section>
+
+<section class="section page" id="contact" aria-labelledby="about-contact">
+  <SectionHead mark="03" title={about.contactTitle[lang]} id="about-contact" />
+  <ContactList lang={lang} />
+</section>

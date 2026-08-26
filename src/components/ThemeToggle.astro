@@ -1,0 +1,71 @@
+---
+import type { Lang } from "../data/i18n";
+import { ui } from "../data/ui";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<button
+  class="toggle"
+  type="button"
+  data-testid="theme-toggle"
+  data-to-light={ui.themeToLight[lang]}
+  data-to-dark={ui.themeToDark[lang]}
+  aria-label={ui.themeToDark[lang]}
+  aria-pressed="false"
+>
+  <Icon name="moon" class="toggle__icon--dark" />
+  <Icon name="sun" class="toggle__icon--light" />
+  <span class="toggle__label--light">{ui.light[lang]}</span>
+  <span class="toggle__label--dark">{ui.dark[lang]}</span>
+</button>
+
+<script is:inline>
+  (() => {
+    const button = document.querySelector("[data-testid='theme-toggle']");
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const root = document.documentElement;
+    const meta = document.getElementById("theme-color");
+    const media = matchMedia("(prefers-color-scheme: dark)");
+
+    const apply = (theme, persist) => {
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+      meta?.setAttribute("content", theme === "dark" ? "#12110f" : "#f3f0e9");
+      button.setAttribute("aria-pressed", String(theme === "dark"));
+      button.setAttribute(
+        "aria-label",
+        theme === "dark" ? (button.dataset.toLight ?? "") : (button.dataset.toDark ?? ""),
+      );
+      if (persist) {
+        try {
+          localStorage.setItem("portfolio-theme", theme);
+        } catch {}
+      }
+    };
+
+    let stored = null;
+    try {
+      stored = localStorage.getItem("portfolio-theme");
+    } catch {}
+
+    apply(root.dataset.theme === "dark" ? "dark" : "light", false);
+
+    button.addEventListener("click", () => {
+      apply(root.dataset.theme === "dark" ? "light" : "dark", true);
+      stored = root.dataset.theme;
+    });
+
+    // Follow the operating system only while the visitor has not chosen.
+    media.addEventListener("change", (event) => {
+      if (stored === "light" || stored === "dark") return;
+      apply(event.matches ? "dark" : "light", false);
+    });
+  })();
+</script>

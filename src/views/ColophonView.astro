@@ -1,0 +1,67 @@
+---
+import Prose from "../components/Prose.astro";
+import SectionHead from "../components/SectionHead.astro";
+import { colophon } from "../data/copy";
+import type { Lang } from "../data/i18n";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const csp = [
+  "default-src 'self';",
+  "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com;",
+  "style-src 'self' 'unsafe-inline';",
+  "font-src 'self';",
+  "img-src 'self' data:;",
+  "connect-src 'self' https://cloudflareinsights.com;",
+  "frame-ancestors 'none';",
+  "base-uri 'self';",
+  "form-action 'none';",
+  "upgrade-insecure-requests",
+].join("\n");
+---
+
+<section class="hero page">
+  <h1>{colophon.headline[lang]}</h1>
+  <div class="prose" style="margin-top: var(--s-6)">
+    <Prose nodes={colophon.lede[lang]} class="lede" />
+  </div>
+</section>
+
+<div class="page"><hr class="rule rule--strong bleed" /></div>
+
+{
+  colophon.blocks.map((block, index) => (
+    <section class="section page" aria-labelledby={block.id}>
+      <SectionHead
+        mark={String(index + 1).padStart(2, "0")}
+        title={block.title[lang]}
+        id={block.id}
+      />
+      <div class="prose">
+        <Prose nodes={block.body[lang]} />
+      </div>
+
+      {block.specs && (
+        <dl class="specs">
+          {block.specs.map((spec) => (
+            <>
+              <dt>{spec.key}</dt>
+              <dd>{spec.value}</dd>
+            </>
+          ))}
+        </dl>
+      )}
+
+      {block.id === "headers" && (
+        <figure class="excerpt" style="max-width: var(--measure)">
+          <pre>{csp}</pre>
+          <figcaption>Content-Security-Policy</figcaption>
+        </figure>
+      )}
+    </section>
+  ))
+}

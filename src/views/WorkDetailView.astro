@@ -1,0 +1,158 @@
+---
+import DiffStat from "../components/DiffStat.astro";
+import Icon from "../components/Icon.astro";
+import Prose from "../components/Prose.astro";
+import SectionHead from "../components/SectionHead.astro";
+import {
+  AREA_LABEL,
+  contributionBySlug,
+  contributionDiff,
+  contributionNeighbours,
+  OMNIROUTE,
+  prUrl,
+} from "../data/contributions";
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import { ui } from "../data/ui";
+
+interface Props {
+  slug: string;
+  lang: Lang;
+}
+
+const { slug, lang } = Astro.props;
+const contribution = contributionBySlug(slug);
+const diff = contributionDiff(contribution);
+const { previous, next } = contributionNeighbours(slug);
+const lead = contribution.prs.reduce((a, b) => (a.additions > b.additions ? a : b));
+/** Several pull requests often merge the same day; show a range, not a repeat. */
+const sortedDates = [...new Set(contribution.prs.map((pr) => pr.mergedAt))].sort();
+const mergedDates =
+  sortedDates.length > 1 ? [sortedDates[0]!, sortedDates.at(-1)!] : [sortedDates[0]!];
+---
+
+<article>
+  <section class="hero page">
+    <p class="overscale" data-testid="pr-number" style="margin: 0 0 var(--s-5)">
+      #{lead.number}
+    </p>
+
+    <div class="railed">
+      <div class="rail">
+        <dl class="specs" style="margin: 0">
+          <dt>{ui.table.area[lang]}</dt>
+          <dd>{AREA_LABEL[contribution.area][lang]}</dd>
+          <dt>{ui.merged[lang]}</dt>
+          <dd>{mergedDates.join(" – ")}</dd>
+          <dt>{ui.table.diff[lang]}</dt>
+          <dd><DiffStat additions={diff.additions} deletions={diff.deletions} /></dd>
+          <dt>{ui.table.files[lang]}</dt>
+          <dd>{diff.files}</dd>
+          <dt>Repo</dt>
+          <dd>
+            <a href={OMNIROUTE.url} target="_blank" rel="noreferrer">{OMNIROUTE.name}</a>
+          </dd>
+        </dl>
+      </div>
+
+      <div>
+        <h1>{contribution.headline[lang]}</h1>
+
+        <ul class="entry__commits" style="margin-top: var(--s-5)">
+          {
+            contribution.prs.map((pr) => (
+              <li>
+                <a href={prUrl(pr.number)} target="_blank" rel="noreferrer">
+                  #{pr.number}
+                </a>{" "}
+                {pr.title}
+              </li>
+            ))
+          }
+        </ul>
+
+        <ul class="tags" style="margin-top: var(--s-5)">
+          {contribution.tech.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="page"><hr class="rule rule--strong bleed" /></div>
+
+  <section class="section page" aria-labelledby="context">
+    <SectionHead mark="01" title={ui.sections.context[lang]} id="context" />
+    <div class="prose"><Prose nodes={contribution.context[lang]} /></div>
+  </section>
+
+  <section class="section page" aria-labelledby="problem">
+    <SectionHead mark="02" title={ui.sections.problem[lang]} id="problem" />
+    <div class="prose"><Prose nodes={contribution.problem[lang]} /></div>
+
+    {
+      contribution.excerpt && (
+        <figure class="excerpt" style="max-width: var(--measure)">
+          <pre>{contribution.excerpt.body}</pre>
+          <figcaption>{contribution.excerpt.caption[lang]}</figcaption>
+        </figure>
+      )
+    }
+  </section>
+
+  <section class="section page" aria-labelledby="change">
+    <SectionHead mark="03" title={ui.sections.change[lang]} id="change" />
+    <div class="prose"><Prose nodes={contribution.change[lang]} /></div>
+  </section>
+
+  <section class="section page" aria-labelledby="impact">
+    <SectionHead mark="04" title={ui.sections.impact[lang]} id="impact" />
+    <div class="prose"><Prose nodes={contribution.impact[lang]} /></div>
+  </section>
+
+  <section class="section page" aria-labelledby="evidence">
+    <SectionHead mark="05" title={ui.sections.evidence[lang]} id="evidence" />
+    <div class="prose">
+      {contribution.evidence.map((item) => <Prose nodes={item[lang]} />)}
+    </div>
+
+    <p class="takeaway">{contribution.takeaway[lang]}</p>
+
+    <p style="margin-top: var(--s-7)">
+      {
+        contribution.prs.map((pr) => (
+          <a
+            class="link-mono"
+            href={prUrl(pr.number)}
+            target="_blank"
+            rel="noreferrer"
+            style="margin-right: var(--s-5)"
+          >
+            #{pr.number}
+            <Icon name="arrow-up-right" />
+          </a>
+        ))
+      }
+    </p>
+
+    <nav class="pager" aria-label={ui.allContributions[lang]}>
+      {
+        previous ? (
+          <a href={localizePath(`/work/${previous.slug}/`, lang)}>
+            <span class="label">← {ui.previous[lang]}</span>
+            <span class="pager__title">{previous.headline[lang]}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={localizePath(`/work/${next.slug}/`, lang)} style="text-align: right">
+            <span class="label">{ui.next[lang]} →</span>
+            <span class="pager__title">{next.headline[lang]}</span>
+          </a>
+        )
+      }
+    </nav>
+  </section>
+</article>

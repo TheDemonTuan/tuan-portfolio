@@ -1,6 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#070a0f"/>
-  <rect x="8" y="8" width="48" height="48" rx="3" fill="none" stroke="#b6ff46"/>
-  <path d="M18 44V20l17 24V20M37 20h13M43.5 20v24" fill="none" stroke="#edf2f4" stroke-width="4" stroke-linejoin="round"/>
-  <circle cx="53" cy="11" r="3" fill="#b6ff46"/>
+  <style>
+    :root { --paper: #f3f0e9; --ink: #16140f; --mark: #b02d18; }
+    @media (prefers-color-scheme: dark) {
+      :root { --paper: #12110f; --ink: #ece7dc; --mark: #ff6a4a; }
+    }
+  </style>
+  <rect width="64" height="64" fill="var(--paper)"/>
+  <path d="M6 13h52" stroke="var(--ink)" stroke-width="1.5"/>
+  <path d="M6 16.5h52" stroke="var(--ink)" stroke-width="1.5"/>
+  <path
+    d="M17 47V25l16 22V25M39 25h11M44.5 25v22"
+    fill="none"
+    stroke="var(--ink)"
+    stroke-width="4.5"
+    stroke-linejoin="round"
+  />
+  <path d="M6 55h52" stroke="var(--mark)" stroke-width="3"/>
 </svg>

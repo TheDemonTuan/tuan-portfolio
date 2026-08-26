@@ -1,0 +1,16 @@
+---
+import { contributionBySlug } from "../../data/contributions";
+import { workPaths } from "../../data/routes";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorkDetailView from "../../views/WorkDetailView.astro";
+
+export const getStaticPaths = workPaths;
+
+const { slug } = Astro.props;
+const contribution = contributionBySlug(slug);
+const title = `${contribution.headline.en} — Nguyễn Viết Tuấn`;
+---
+
+<BaseLayout title={title} description={contribution.summary.en} lang="en">
+  <WorkDetailView slug={slug} lang="en" />
+</BaseLayout>

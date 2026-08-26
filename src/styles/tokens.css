@@ -1,0 +1,97 @@
+/*
+ * Light paper is the intended edition and the server-rendered default, so a
+ * visitor with no JavaScript and no stored preference gets the real design.
+ * Dark is a designed counterpart, not a filter applied to the light one.
+ */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --paper: #f3f0e9;
+  --paper-2: #eae6dc;
+  --paper-3: #e0dbcf;
+
+  --ink: #16140f;
+  --ink-2: #4a463d;
+  --ink-3: #6f695c;
+
+  --rule: rgba(22, 20, 15, 0.22);
+  --rule-soft: rgba(22, 20, 15, 0.11);
+
+  --mark: #b02d18;
+  --mark-ink: #f8f5ef;
+
+  --add: #2f6b34;
+  --del: #a3341f;
+
+  --grain: 0.032;
+
+  --selection-bg: #16140f;
+  --selection-fg: #f3f0e9;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #12110f;
+  --paper-2: #1b1916;
+  --paper-3: #24211d;
+
+  --ink: #ece7dc;
+  --ink-2: #b3ac9d;
+  --ink-3: #8b8474;
+
+  --rule: rgba(236, 231, 220, 0.24);
+  --rule-soft: rgba(236, 231, 220, 0.12);
+
+  --mark: #ff6a4a;
+  --mark-ink: #12110f;
+
+  --add: #7fc48a;
+  --del: #ff8a72;
+
+  --grain: 0.022;
+
+  --selection-bg: #ece7dc;
+  --selection-fg: #12110f;
+}
+
+:root {
+  /* Type ------------------------------------------------------------- */
+  --display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+  --serif: "Newsreader Variable", "Newsreader", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+
+  /* A 1.2 minor third for text; display uses the three clamps below and
+     nothing else in the codebase is allowed to invent its own size. */
+  --step--2: 0.694rem;
+  --step--1: 0.833rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.44rem;
+  --step-3: 1.728rem;
+
+  --display-s: clamp(1.9rem, 1.35rem + 2.6vw, 3rem);
+  --display-m: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+  --display-l: clamp(3rem, 1rem + 10vw, 8.5rem);
+
+  /* Spacing — 4px base. No value outside this scale. ------------------ */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+  --s-11: 160px;
+
+  /* Layout ------------------------------------------------------------ */
+  --gutter: clamp(20px, 4vw, 56px);
+  --measure: 68ch;
+  --rail: 172px;
+  --page: 1240px;
+  --rule-w: 1px;
+}

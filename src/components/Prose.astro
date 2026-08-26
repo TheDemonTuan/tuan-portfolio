@@ -1,0 +1,26 @@
+---
+import type { RichText } from "../data/contributions";
+
+interface Props {
+  nodes: RichText;
+  class?: string;
+}
+
+const { nodes, class: className } = Astro.props;
+---
+
+<p class={className}>
+  {
+    nodes.map((node) =>
+      typeof node === "string" ? (
+        node
+      ) : "code" in node ? (
+        <code>{node.code}</code>
+      ) : (
+        <a href={node.href} target="_blank" rel="noreferrer">
+          {node.link}
+        </a>
+      ),
+    )
+  }
+</p>

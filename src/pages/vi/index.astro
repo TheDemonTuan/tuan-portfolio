@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { home } from "../../data/copy";
+import HomeView from "../../views/HomeView.astro";
+---
+
+<BaseLayout title={home.title.vi} description={home.description.vi} lang="vi">
+  <HomeView lang="vi" />
+</BaseLayout>

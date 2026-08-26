@@ -1,0 +1,16 @@
+---
+interface Props {
+  mark: string;
+  title: string;
+  id?: string;
+  level?: "h2" | "h3";
+}
+
+const { mark, title, id, level = "h2" } = Astro.props;
+const Heading = level;
+---
+
+<div class="section__head">
+  <span class="section__mark label" aria-hidden="true">§ {mark}</span>
+  <Heading id={id}>{title}</Heading>
+</div>

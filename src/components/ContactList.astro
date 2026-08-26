@@ -1,0 +1,60 @@
+---
+import type { Lang } from "../data/i18n";
+import { contactLinks, site } from "../data/site";
+import Icon from "./Icon.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const links = contactLinks();
+---
+
+<ul class="contact" data-testid="contact-list">
+  {
+    links.map((link) => (
+      <li>
+        <span class="contact__label">{link.label[lang]}</span>
+        <span class="contact__value">
+          {link.id === "email" ? (
+            <a
+              class="link-mono"
+              data-email-user={site.email.user}
+              data-email-domain={site.email.domain}
+              data-testid="contact-email"
+              href="#contact"
+            >
+              <Icon name="mail" />
+              <span class="email-text">{`${site.email.user} [at] ${site.email.domain}`}</span>
+            </a>
+          ) : (
+            <a
+              class="link-mono"
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
+              data-testid={`contact-${link.id}`}
+            >
+              <Icon name={link.icon} />
+              {link.value[lang]}
+            </a>
+          )}
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<script is:inline>
+  (() => {
+    const anchor = document.querySelector("[data-email-user]");
+    if (!(anchor instanceof HTMLAnchorElement)) return;
+    const { emailUser, emailDomain } = anchor.dataset;
+    if (!emailUser || !emailDomain) return;
+    const address = `${emailUser}@${emailDomain}`;
+    anchor.href = `mailto:${address}`;
+    const text = anchor.querySelector(".email-text");
+    if (text) text.textContent = address;
+  })();
+</script>

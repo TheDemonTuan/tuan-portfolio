@@ -1,0 +1,9 @@
+---
+import { about } from "../../data/copy";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import AboutView from "../../views/AboutView.astro";
+---
+
+<BaseLayout title={about.title.vi} description={about.description.vi} lang="vi">
+  <AboutView lang="vi" />
+</BaseLayout>

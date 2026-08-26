@@ -1,24 +1,31 @@
 ---
+import Icon from "../components/Icon.astro";
+import { notFound } from "../data/copy";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { ui } from "../data/ui";
 ---
 
-<BaseLayout title="404 — Nguyễn Viết Tuấn" description="Trang không tồn tại.">
-  <main class="error-page shell">
-    <a class="brand" href="/" aria-label="Nguyễn Viết Tuấn — Home">
-      <span class="brand-mark" aria-hidden="true">NT</span>
-    </a>
-    <p class="eyebrow">ERROR / 404</p>
-    <h1>
-      <span data-copy="vi">Lạc đường rồi.</span>
-      <span data-copy="en">Wrong turn.</span>
-    </h1>
-    <p class="lede">
-      <span data-copy="vi">Trang bạn tìm không tồn tại hoặc đã được di chuyển.</span>
-      <span data-copy="en">The page you are looking for does not exist or has moved.</span>
+<BaseLayout
+  title={notFound.title.en}
+  description={notFound.description.en}
+  lang="en"
+  indexable={false}
+>
+  <section class="error page" data-testid="not-found">
+    <p class="overscale" style="margin: 0 0 var(--s-5)">404</p>
+    <h1>{notFound.headline.en}</h1>
+    <p class="lede" style="margin-top: var(--s-5)">{notFound.body.en}</p>
+
+    <p style="margin-top: var(--s-7)">
+      <a class="link-mono" href="/work/" style="margin-right: var(--s-5)">
+        {ui.allContributions.en}
+        <Icon name="arrow" />
+      </a>
+      <a class="link-mono" href="/">{ui.home.en}</a>
     </p>
-    <a class="button button-primary" href="/">
-      <span data-copy="vi">Về trang chính</span>
-      <span data-copy="en">Back home</span>
-    </a>
-  </main>
+
+    <p class="marginalia" style="margin-top: var(--s-8)">
+      <a href="/vi/">Trang này bằng tiếng Việt →</a>
+    </p>
+  </section>
 </BaseLayout>

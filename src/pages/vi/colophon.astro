@@ -1,0 +1,9 @@
+---
+import { colophon } from "../../data/copy";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ColophonView from "../../views/ColophonView.astro";
+---
+
+<BaseLayout title={colophon.title.vi} description={colophon.description.vi} lang="vi">
+  <ColophonView lang="vi" />
+</BaseLayout>

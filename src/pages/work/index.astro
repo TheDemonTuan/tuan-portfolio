@@ -1,0 +1,9 @@
+---
+import { work } from "../../data/copy";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorkIndexView from "../../views/WorkIndexView.astro";
+---
+
+<BaseLayout title={work.title.en} description={work.description.en} lang="en">
+  <WorkIndexView lang="en" />
+</BaseLayout>
