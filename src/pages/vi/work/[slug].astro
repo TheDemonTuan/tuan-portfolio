@@ -1,16 +1,20 @@
 ---
+import { articles } from "../../../data/articles";
 import { contributionBySlug } from "../../../data/contributions";
 import { workPaths } from "../../../data/routes";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ArticleDetailView from "../../../views/ArticleDetailView.astro";
 import WorkDetailView from "../../../views/WorkDetailView.astro";
 
 export const getStaticPaths = workPaths;
 
 const { slug } = Astro.props;
-const contribution = contributionBySlug(slug);
-const title = `${contribution.headline.vi} — Nguyễn Viết Tuấn`;
+const article = articles.find((entry) => entry.slug === slug);
+const contribution = article ? null : contributionBySlug(slug);
+const title = `${article ? article.title.vi : contribution!.headline.vi} — Nguyễn Viết Tuấn`;
+const description = article ? article.description.vi : contribution!.summary.vi;
 ---
 
-<BaseLayout title={title} description={contribution.summary.vi} lang="vi">
-  <WorkDetailView slug={slug} lang="vi" />
+<BaseLayout title={title} description={description} lang="vi">
+  {article ? <ArticleDetailView slug={slug} lang="vi" /> : <WorkDetailView slug={slug} lang="vi" />}
 </BaseLayout>

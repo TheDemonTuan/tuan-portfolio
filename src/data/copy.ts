@@ -7,19 +7,19 @@ export const home = {
     vi: "Nguyễn Viết Tuấn — lập trình viên backend",
   } satisfies L10n,
   description: {
-    en: "Backend developer in Hanoi. Six patches merged into OmniRoute, an MIT AI gateway with 55,917 stars. This is what they fixed and why.",
-    vi: "Lập trình viên backend tại Hà Nội. Sáu bản vá đã merge vào OmniRoute, một AI gateway MIT với 55.917 sao. Đây là những gì chúng sửa và vì sao.",
+    en: "Backend developer in Hanoi. Source-backed notes on operating OmniRoute, building production workflows and solving upstream failures.",
+    vi: "Lập trình viên backend tại Hà Nội. Ghi chép có dẫn chứng về vận hành OmniRoute, xây workflow production và giải quyết lỗi upstream.",
   } satisfies L10n,
   headline: {
-    en: "I fix things that break underneath the application.",
-    vi: "Tôi sửa những thứ vỡ ở bên dưới ứng dụng.",
+    en: "I build the path from a broken system to a release I can explain.",
+    vi: "Tôi xây đường đi từ một hệ thống đang hỏng đến một release có thể giải thích.",
   } satisfies L10n,
   lede: {
     en: [
-      "Backend developer in Hanoi. Most of what I have shipped in public lives inside somebody else's codebase: startup crashes in a container that will not boot, admission control that lies about capacity, build failures that only appear inside a bundler. The pages below are the actual patches, with the diffs attached.",
+      "Backend developer in Hanoi, working where application code meets runtimes and operations. I trace startup crashes, capacity bugs and bundler failures; then carry the fix through tests, containers and a production VPS. The pages below show the decisions, source and diffs rather than a list of claims.",
     ],
     vi: [
-      "Lập trình viên backend tại Hà Nội. Phần lớn những gì tôi đã đưa ra công khai nằm bên trong codebase của người khác: những cú crash lúc khởi động trong một container không chịu boot, cơ chế nạp request nói dối về tài nguyên, những lỗi build chỉ xuất hiện bên trong bundler. Các trang bên dưới là chính những bản vá đó, kèm nguyên diff.",
+      "Lập trình viên backend tại Hà Nội, làm việc tại nơi code ứng dụng gặp runtime và vận hành. Tôi truy vết crash lúc khởi động, lỗi tính tải và lỗi bundler; sau đó đưa bản sửa đi qua test, container và VPS production. Các trang dưới trình bày quyết định, source và diff thay vì một danh sách lời tự nhận.",
     ],
   } satisfies L10n<RichText>,
   selectedTitle: { en: "Selected contributions", vi: "Đóng góp tiêu biểu" } satisfies L10n,
@@ -42,14 +42,14 @@ export const home = {
 
 export const work = {
   title: {
-    en: "Upstream contributions — Nguyễn Viết Tuấn",
-    vi: "Đóng góp upstream — Nguyễn Viết Tuấn",
+    en: "Notes and work — Nguyễn Viết Tuấn",
+    vi: "Ghi chép và dự án — Nguyễn Viết Tuấn",
   } satisfies L10n,
   description: {
-    en: "Six pull requests merged into OmniRoute: SSE admission control, a Bun N-API startup crash, and bundler resolution failures.",
-    vi: "Sáu pull request đã merge vào OmniRoute: admission control cho SSE, một cú crash N-API lúc khởi động Bun, và các lỗi resolution của bundler.",
+    en: "Operations field notes, personal infrastructure and six upstream pull requests for OmniRoute.",
+    vi: "Ghi chép vận hành, hạ tầng cá nhân và sáu pull request upstream cho OmniRoute.",
   } satisfies L10n,
-  headline: { en: "Upstream contributions", vi: "Đóng góp upstream" } satisfies L10n,
+  headline: { en: "Notes, systems and fixes", vi: "Ghi chép, hệ thống và bản sửa" } satisfies L10n,
   scopeNote: {
     en: "Focused fixes and runtime hardening, not feature epics. Diff sizes are as merged, and every link goes to the pull request itself.",
     vi: "Là những bản vá tập trung và việc siết chặt runtime, không phải các epic tính năng. Kích thước diff đúng như lúc merge, và mọi link đều trỏ thẳng tới pull request.",

@@ -1,10 +1,12 @@
 ---
+import ArticleEntry from "../components/ArticleEntry.astro";
 import ContactList from "../components/ContactList.astro";
 import ContribEntry from "../components/ContribEntry.astro";
 import Icon from "../components/Icon.astro";
 import Prose from "../components/Prose.astro";
 import SectionHead from "../components/SectionHead.astro";
 import StackList from "../components/StackList.astro";
+import { articles } from "../data/articles";
 import { contributions, OMNIROUTE, totals } from "../data/contributions";
 import { home } from "../data/copy";
 import { localizePath } from "../data/i18n";
@@ -19,6 +21,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const n = (value: number) => value.toLocaleString("en-US");
+const featuredArticle = articles[0]!;
 ---
 
 <section class="hero page">
@@ -68,8 +71,17 @@ const n = (value: number) => value.toLocaleString("en-US");
   <hr class="rule rule--strong bleed" />
 </div>
 
+<section class="section page" aria-labelledby="field-notes">
+  <SectionHead
+    mark="01"
+    title={lang === "vi" ? "Ghi chép mới" : "Latest field note"}
+    id="field-notes"
+  />
+  <ArticleEntry article={featuredArticle} lang={lang} featured />
+</section>
+
 <section class="section page" aria-labelledby="selected">
-  <SectionHead mark="01" title={home.selectedTitle[lang]} id="selected" />
+  <SectionHead mark="02" title={home.selectedTitle[lang]} id="selected" />
   <p class="lede" style="margin-bottom: var(--s-6)">{home.selectedNote[lang]}</p>
 
   {contributions.map((contribution) => <ContribEntry contribution={contribution} lang={lang} />)}
@@ -83,7 +95,7 @@ const n = (value: number) => value.toLocaleString("en-US");
 </section>
 
 <section class="section page" aria-labelledby="own-work">
-  <SectionHead mark="02" title={home.personalTitle[lang]} id="own-work" />
+  <SectionHead mark="03" title={home.personalTitle[lang]} id="own-work" />
   <p class="marginalia" style="margin-bottom: var(--s-6)">{home.personalNote[lang]}</p>
 
   <dl class="specs" data-testid="personal-work">
@@ -109,12 +121,12 @@ const n = (value: number) => value.toLocaleString("en-US");
 </section>
 
 <section class="section page" aria-labelledby="tools">
-  <SectionHead mark="03" title={home.stackTitle[lang]} id="tools" />
+  <SectionHead mark="04" title={home.stackTitle[lang]} id="tools" />
   <p class="marginalia" style="margin-bottom: var(--s-6)">{home.stackNote[lang]}</p>
   <StackList lang={lang} />
 </section>
 
 <section class="section page" id="contact" aria-labelledby="contact-title">
-  <SectionHead mark="04" title={home.contactTitle[lang]} id="contact-title" />
+  <SectionHead mark="05" title={home.contactTitle[lang]} id="contact-title" />
   <ContactList lang={lang} />
 </section>

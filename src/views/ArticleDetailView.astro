@@ -1,0 +1,142 @@
+---
+import Icon from "../components/Icon.astro";
+import Prose from "../components/Prose.astro";
+import SectionHead from "../components/SectionHead.astro";
+import { articleBySlug } from "../data/articles";
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+
+interface Props {
+  slug: string;
+  lang: Lang;
+}
+
+const { slug, lang } = Astro.props;
+const article = articleBySlug(slug);
+const copy = {
+  published: { en: "Published", vi: "Xuất bản" },
+  updated: { en: "Updated", vi: "Cập nhật" },
+  contents: { en: "In this note", vi: "Trong bài này" },
+  design: { en: "The three constraints", vi: "Ba ràng buộc" },
+  walkthrough: { en: "The delivery path", vi: "Đường phân phối" },
+  limits: { en: "What this does not claim", vi: "Những điều bài này không khẳng định" },
+  source: { en: "Inspect source", vi: "Xem source" },
+  back: { en: "Back to all work", vi: "Về toàn bộ dự án" },
+} as const;
+---
+
+<article class="article">
+  <header class="article-hero page">
+    <div class="article-hero__meta">
+      <span class="label">{article.eyebrow[lang]}</span>
+      <span class="mono muted">{article.readTime[lang]}</span>
+    </div>
+    <h1>{article.title[lang]}</h1>
+    <Prose nodes={article.lede[lang]} class="lede article-hero__lede" />
+    <dl class="article-facts">
+      <div>
+        <dt>{copy.published[lang]}</dt>
+        <dd><time datetime={article.published}>{article.published}</time></dd>
+      </div>
+      <div>
+        <dt>{copy.updated[lang]}</dt>
+        <dd><time datetime={article.updated}>{article.updated}</time></dd>
+      </div>
+      <div>
+        <dt>Stack</dt>
+        <dd>{article.stack.join(" · ")}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="page"><hr class="rule rule--strong bleed" /></div>
+
+  <section class="section page article-intro" aria-labelledby="contents">
+    <aside class="article-toc">
+      <p class="label" id="contents">{copy.contents[lang]}</p>
+      <ol>
+        {
+          article.steps.map((step) => (
+            <li>
+              <a href={`#${step.id}`}>{step.title[lang]}</a>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
+
+    <div>
+      <div class="pipeline" aria-label="Deployment pipeline">
+        {
+          article.architecture.map((node, index) => (
+            <>
+              <code>{node}</code>
+              {index < article.architecture.length - 1 && <span aria-hidden="true">→</span>}
+            </>
+          ))
+        }
+      </div>
+
+      <h2>{copy.design[lang]}</h2>
+      <div class="principle-grid">
+        {
+          article.principles.map((principle, index) => (
+            <article>
+              <span class="label">0{index + 1}</span>
+              <h3>{principle.title[lang]}</h3>
+              <p>{principle.body[lang]}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section page" aria-labelledby="walkthrough">
+    <SectionHead mark="02" title={copy.walkthrough[lang]} id="walkthrough" />
+    <div class="article-steps">
+      {
+        article.steps.map((step, index) => (
+          <section class="article-step" id={step.id} aria-labelledby={`${step.id}-title`}>
+            <div class="article-step__index">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span class="label">{step.label[lang]}</span>
+            </div>
+            <div class="article-step__body">
+              <h3 id={`${step.id}-title`}>{step.title[lang]}</h3>
+              <Prose nodes={step.summary[lang]} class="article-step__summary" />
+              <Prose nodes={step.detail[lang]} />
+              <a class="source-link" href={step.proof.href} target="_blank" rel="noreferrer">
+                {copy.source[lang]}: <code>{step.proof.label}</code>
+                <Icon name="arrow-up-right" size={15} />
+              </a>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section page" aria-labelledby="limits">
+    <SectionHead mark="03" title={copy.limits[lang]} id="limits" />
+    <div class="limits-list">
+      {
+        article.limits.map((limit, index) => (
+          <div>
+            <>
+              <span class="mono">0{index + 1}</span>
+              <Prose nodes={limit[lang]} />
+            </>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <nav class="work-nav page" aria-label={copy.back[lang]}>
+    <a href={localizePath("/work/", lang)}>
+      <span class="label">← {copy.back[lang]}</span>
+      <strong>{lang === "vi" ? "Ghi chép & dự án" : "Notes & projects"}</strong>
+    </a>
+  </nav>
+</article>

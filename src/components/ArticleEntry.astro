@@ -1,0 +1,33 @@
+---
+import type { Article } from "../data/articles";
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import Icon from "./Icon.astro";
+
+interface Props {
+  article: Article;
+  lang: Lang;
+  featured?: boolean;
+}
+
+const { article, lang, featured = false } = Astro.props;
+---
+
+<a
+  class:list={["article-card", { "article-card--featured": featured }]}
+  href={localizePath(`/work/${article.slug}/`, lang)}
+  data-testid="article-entry"
+>
+  <div class="article-card__meta">
+    <span class="label">{article.eyebrow[lang]}</span>
+    <span class="mono muted"
+      >{article.published.replaceAll("-", ".")} · {article.readTime[lang]}</span
+    >
+  </div>
+  <h3>{article.title[lang]}</h3>
+  <p>{article.description[lang]}</p>
+  <div class="article-card__footer">
+    <span class="mono muted">{article.stack.join(" · ")}</span>
+    <Icon name="arrow" size={18} />
+  </div>
+</a>

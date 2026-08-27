@@ -1,11 +1,15 @@
 ---
+import ArticleEntry from "../components/ArticleEntry.astro";
+import ContribEntry from "../components/ContribEntry.astro";
 import DiffStat from "../components/DiffStat.astro";
 import Icon from "../components/Icon.astro";
 import SectionHead from "../components/SectionHead.astro";
+import { articles } from "../data/articles";
 import {
   AREA_LABEL,
   allPullRequests,
   contributionBySlug,
+  contributions,
   OMNIROUTE,
   prUrl,
   totals,
@@ -49,14 +53,45 @@ const n = (value: number) => value.toLocaleString("en-US");
 
     <div>
       <h1>{work.headline[lang]}</h1>
-      <p class="lede" style="margin-top: var(--s-5)">{OMNIROUTE.description[lang]}</p>
+      <p class="lede" style="margin-top: var(--s-5)">
+        {
+          lang === "vi"
+            ? "Ghi chép vận hành, project tự xây và các lần truy vết đã trở thành pull request upstream. Đọc bài tổng quan trước, hoặc đi thẳng vào diff."
+            : "Operations notes, self-built projects and investigations that became upstream pull requests. Start with the field note, or go straight to the diffs."
+        }
+      </p>
       <p class="marginalia" style="margin-top: var(--s-5)">{work.scopeNote[lang]}</p>
     </div>
   </div>
 </section>
 
+<section class="section page" aria-labelledby="notes">
+  <SectionHead mark="01" title={lang === "vi" ? "Bài viết" : "Field notes"} id="notes" />
+  <div class="article-list">
+    {articles.map((article) => <ArticleEntry article={article} lang={lang} featured />)}
+  </div>
+</section>
+
+<section class="section page" aria-labelledby="investigations">
+  <SectionHead
+    mark="02"
+    title={lang === "vi" ? "Các lần truy vết" : "Investigations"}
+    id="investigations"
+  />
+  <p class="section-note">
+    {
+      lang === "vi"
+        ? "Ba case study được viết theo cùng một nhịp: triệu chứng, nguyên nhân gốc, thay đổi và bằng chứng."
+        : "Three case studies follow one rhythm: symptom, root cause, change and evidence."
+    }
+  </p>
+  <div class="entries">
+    {contributions.map((contribution) => <ContribEntry contribution={contribution} lang={lang} />)}
+  </div>
+</section>
+
 <section class="section page" aria-labelledby="merged">
-  <SectionHead mark="01" title={ui.merged[lang]} id="merged" />
+  <SectionHead mark="03" title={ui.merged[lang]} id="merged" />
 
   <div class="table-wrap">
     <table data-testid="pr-table">
@@ -127,7 +162,7 @@ const n = (value: number) => value.toLocaleString("en-US");
 </section>
 
 <section class="section page" aria-labelledby="own">
-  <SectionHead mark="02" title={work.personalTitle[lang]} id="own" />
+  <SectionHead mark="04" title={work.personalTitle[lang]} id="own" />
 
   <dl class="specs" data-testid="personal-work">
     {

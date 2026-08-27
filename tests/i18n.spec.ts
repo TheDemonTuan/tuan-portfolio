@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { contributions } from "../src/data/contributions";
+import { articles } from "../src/data/articles";
 
-const deepPath = `/work/${contributions[0]!.slug}/`;
+const deepPath = `/work/${articles[0]!.slug}/`;
 
 test.describe("language", () => {
   test("English is the default edition and is what x-default points at", async ({ page }) => {

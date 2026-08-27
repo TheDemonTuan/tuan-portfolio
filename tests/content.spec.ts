@@ -1,8 +1,14 @@
 import { expect, test } from "@playwright/test";
+import { articles } from "../src/data/articles";
 import { allPullRequests, contributions, OMNIROUTE, totals } from "../src/data/contributions";
 import { site } from "../src/data/site";
 
 test.describe("content matches the data layer", () => {
+  test("the editorial index exposes every field note", async ({ page }) => {
+    await page.goto("/work/");
+    await expect(page.getByTestId("article-entry")).toHaveCount(articles.length);
+  });
+
   test("the contributions table has one row per pull request", async ({ page }) => {
     await page.goto("/work/");
     await expect(page.getByTestId("pr-row")).toHaveCount(allPullRequests.length);

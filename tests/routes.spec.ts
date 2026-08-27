@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { articles } from "../src/data/articles";
 import { contributions } from "../src/data/contributions";
 
 /**
@@ -11,6 +12,7 @@ const englishRoutes = [
   "/about/",
   "/colophon/",
   ...contributions.map((contribution) => `/work/${contribution.slug}/`),
+  ...articles.map((article) => `/work/${article.slug}/`),
 ];
 
 const routes = [

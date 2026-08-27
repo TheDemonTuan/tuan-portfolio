@@ -19,7 +19,7 @@ export const ui = {
   previous: { en: "Previous", vi: "Trước" },
   next: { en: "Next", vi: "Tiếp" },
   nav: {
-    work: { en: "Work", vi: "Dự án" },
+    work: { en: "Notes / Work", vi: "Bài viết / Dự án" },
     about: { en: "About", vi: "Giới thiệu" },
     colophon: { en: "Colophon", vi: "Kỹ thuật" },
   },

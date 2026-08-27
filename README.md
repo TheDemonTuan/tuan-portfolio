@@ -26,6 +26,7 @@ All copy and data live in `src/data/`, never in markup:
 | File               | Holds                                                       |
 | ------------------ | ----------------------------------------------------------- |
 | `contributions.ts` | The merged upstream pull requests and their write-ups       |
+| `articles.ts`      | Long-form operations notes with source-backed evidence      |
 | `personal-work.ts` | Fork and self-hosted work, labelled separately on purpose   |
 | `site.ts`          | Identity and contact channels                               |
 | `stack.ts`         | Tools, each linked to the contribution that demonstrates it |
