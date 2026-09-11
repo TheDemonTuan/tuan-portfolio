@@ -13,10 +13,15 @@ yarn-error.log*
 pnpm-debug.log*
 
 
-# environment variables
+# environment variables and runtime secrets
 .env
 .env.*
 !.env.example
+.tunnel-token
+**/secrets/
+**/.deploy.env
+**/.deployed-image
+**/.previous-image
 
 # test output
 test-results/

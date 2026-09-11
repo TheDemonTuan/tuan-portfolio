@@ -216,14 +216,14 @@ export const colophon = {
       title: { en: "Delivery", vi: "Đường ra Internet" },
       body: {
         en: [
-          "The container binds to ",
-          { code: "127.0.0.1:18080" },
-          " and is never published on a public interface. Traffic arrives through a dedicated Cloudflare Tunnel connector on a private Compose network, holding its own credentials as a file-mounted secret. The connector waits for the site's health check before it starts, so it cannot route to a container that is not ready.",
+          "The container publishes no host port. Traffic reaches ",
+          { code: "portfolio-web:8080" },
+          " through the VPS-wide Cloudflare Tunnel and shared Caddy gateway. Only Caddy and the site join the internal edge-portfolio network; the connector remains on a separate internal ingress network and cannot connect to the site directly.",
         ],
         vi: [
-          "Container bind vào ",
-          { code: "127.0.0.1:18080" },
-          " và không bao giờ được publish ra interface công cộng. Lưu lượng đi vào qua một connector Cloudflare Tunnel riêng trên một mạng Compose nội bộ, giữ credential riêng dưới dạng secret gắn theo file. Connector chờ health check của trang trước khi khởi động, nên nó không thể route tới một container chưa sẵn sàng.",
+          "Container không publish host port. Lưu lượng tới ",
+          { code: "portfolio-web:8080" },
+          " qua Cloudflare Tunnel và Caddy gateway dùng chung của VPS. Chỉ Caddy và website tham gia mạng edge-portfolio nội bộ; connector nằm trên một mạng ingress nội bộ tách biệt và không thể kết nối trực tiếp tới website.",
         ],
       },
     },
@@ -236,14 +236,14 @@ export const colophon = {
           { code: "main" },
           " type-checks, builds an ARM64 image, publishes it to the registry, and deploys it over SSH by immutable digest — the deploy script rejects a mutable tag outright. Deploys are serialised with a lock rather than queued, the active and previous digests are recorded, and a rollback is wired to the shell's own error trap. If the replacement fails either its container health check or a direct request to ",
           { code: "/healthz" },
-          " within ninety seconds, the previous digest comes back. Old images are removed only after a successful health check, and never with a host-wide prune.",
+          " through the shared gateway within ninety seconds, the previous image and Compose configuration come back. Old images are removed only after a successful health check, and never with a host-wide prune.",
         ],
         vi: [
           "Mỗi lần push lên ",
           { code: "main" },
           " sẽ type-check, build image ARM64, publish lên registry, rồi triển khai qua SSH theo digest bất biến — script deploy từ chối thẳng một tag có thể thay đổi. Các lượt deploy được tuần tự hoá bằng lock chứ không xếp hàng, digest hiện tại và trước đó đều được ghi lại, và cơ chế rollback gắn thẳng vào error trap của shell. Nếu bản thay thế thất bại ở health check của container hoặc ở một request trực tiếp tới ",
           { code: "/healthz" },
-          " trong vòng chín mươi giây, digest trước đó sẽ quay lại. Image cũ chỉ bị xoá sau khi health check thành công, và không bao giờ bằng một lệnh prune toàn máy.",
+          " qua gateway dùng chung trong vòng chín mươi giây, image và cấu hình Compose trước đó sẽ quay lại. Image cũ chỉ bị xoá sau khi health check thành công, và không bao giờ bằng một lệnh prune toàn máy.",
         ],
       },
       specs: [

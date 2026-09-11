@@ -48,7 +48,7 @@ prune_repository_images \
 grep -q 'source "$APP_DIR/image-retention.sh"' scripts/deploy.sh
 grep -q 'prune_repository_images' scripts/deploy.sh
 grep -q 'PREVIOUS_IMAGE_STATE=' scripts/deploy.sh
-grep -q 'RETAINED_PREVIOUS_IMAGE=' scripts/deploy.sh
+grep -q 'cat "$PREVIOUS_IMAGE_STATE"' scripts/deploy.sh
 grep -q 'scripts/image-retention.sh' .github/workflows/deploy.yml
 ! grep -q 'docker builder prune' scripts/deploy.sh
 

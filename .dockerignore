@@ -5,3 +5,10 @@ node_modules
 test-results
 playwright-report
 npm-debug.log*
+.tunnel-token
+**/secrets
+**/.deploy.env
+**/.deployed-image
+**/.previous-image
+infra
+EDGE_INGRESS_RULES.md

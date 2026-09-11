@@ -44,10 +44,10 @@ export const personalWork: readonly PersonalProject[] = [
     title: "tuannguyenviet.site",
     year: "2026",
     summary: {
-      en: "This site, and the pipeline under it: digest-pinned deploys serialised with a lock, automatic rollback on a failed health check, and a hardened read-only container reachable only through its own tunnel.",
-      vi: "Chính trang này, và pipeline bên dưới nó: deploy ghim theo digest và tuần tự hoá bằng lock, tự động rollback khi health check thất bại, và một container read-only đã siết chặt, chỉ tiếp cận được qua tunnel riêng của nó.",
+      en: "This site, and the pipeline under it: digest-pinned deploys serialised with a lock, automatic rollback on a failed health check, and a hardened read-only container reached through the VPS-wide shared edge gateway.",
+      vi: "Chính trang này, và pipeline bên dưới nó: deploy ghim theo digest và tuần tự hoá bằng lock, tự động rollback khi health check thất bại, và một container read-only đã siết chặt, chỉ tiếp cận qua edge gateway dùng chung của VPS.",
     },
-    tech: ["Astro", "Docker", "Nginx", "GitHub Actions", "Cloudflare Tunnel"],
+    tech: ["Astro", "Docker", "Nginx", "Caddy", "GitHub Actions", "Cloudflare Tunnel"],
     url: "https://github.com/TheDemonTuan/tuan-portfolio",
     kind: "self",
   },

@@ -4,16 +4,19 @@ set -euo pipefail
 script="scripts/deploy.sh"
 bash -n "$script"
 grep -q 'flock -n' "$script"
-grep -q 'sha256:\[a-f0-9\]{64\}' "$script"
-grep -q 'Deployment failed; rolling back' "$script"
-grep -q 'curl --fail' "$script"
-grep -q 'dc up -d --no-deps tunnel' "$script"
-grep -q 'token-file /run/secrets/tunnel-token' compose.yml
+grep -q 'sha256:\[a-f0-9\]{64}' "$script"
+grep -q 'Deployment failed; restoring previous configuration' "$script"
+grep -q 'ingress_healthy' "$script"
+grep -q 'edge-portfolio must be internal' "$script"
+grep -q 'dc up -d --no-deps --force-recreate portfolio' "$script"
+grep -q 'external: true' compose.yml
+grep -q 'name: edge-portfolio' compose.yml
+grep -q 'portfolio-web' compose.yml
 
-if grep -Eiq 'omniroute|\.tunnel\.env|caddy|omniroute_edge' \
+if grep -Eiq '^([[:space:]]*)(tunnel:|ports:)|token-file|^[[:space:]]*image:.*cloudflared|^[[:space:]]*caddy:' \
   compose.yml scripts/deploy.sh .github/workflows/deploy.yml; then
-  echo "deployment must not reference another app, proxy, tunnel token, or network" >&2
+  echo "portfolio deployment must not own a proxy, tunnel, token, or host port" >&2
   exit 1
 fi
 
-echo "deploy script checks passed"
+printf 'deploy script checks passed\n'

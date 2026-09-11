@@ -49,11 +49,10 @@ test.describe("theme", () => {
    */
   test("never paints the wrong edition first", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "light" });
-    await page.addInitScript(
+    await page.goto("/");
+    await page.evaluate(
       ([key, value]) => {
-        try {
-          localStorage.setItem(key, value);
-        } catch {}
+        localStorage.setItem(key, value);
       },
       [THEME_KEY, "dark"],
     );

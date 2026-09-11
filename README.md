@@ -82,15 +82,18 @@ node scripts/make-og.mjs
 ## Production container
 
 ```bash
-docker compose build
+docker network inspect edge-portfolio
 docker compose up -d
-curl --fail http://127.0.0.1:18080/healthz
+EDGE_HOST=tuannguyenviet.site scripts/edge-smoke.sh
 ```
 
-The site container serves static files on `127.0.0.1:18080`; it is intentionally inaccessible from
-public interfaces. A dedicated Cloudflare Tunnel connector reaches it through the private Compose
-network. The Compose project, network, tunnel, deployment state, and ingress are kept independent
-from every other application on the VPS.
+The external `edge-portfolio` network and shared edge stack must exist before starting the production Compose file.
+
+The production site container publishes no host port. The VPS-wide Cloudflare Tunnel connector
+reaches one shared Caddy gateway; that gateway proxies `tuannguyenviet.site` to the stable Docker
+alias `portfolio-web:8080` on the internal `edge-portfolio` network. The portfolio repository owns
+only the application container, while `/opt/edge` owns the single connector and gateway used by
+all migrated applications. See `EDGE_INGRESS_RULES.md` for the convention used by other repos.
 
 `nginx.conf` sets `absolute_redirect off` — without it, the redirect from `/work` to `/work/`
 would be built from the container's own host and port and leak an internal address through the
@@ -104,11 +107,11 @@ Every push to `main` runs `.github/workflows/deploy.yml`:
 2. Build the ARM64 container on a native GitHub runner.
 3. Publish `ghcr.io/thedemontuan/tuan-portfolio` to GitHub Container Registry.
 4. Deploy the immutable image digest to `/opt/tuan-portfolio` over SSH.
-5. Wait for the portfolio container's loopback health check.
-6. Keep the dedicated portfolio tunnel connector running on the same private Compose network.
+5. Stage deployment files after confirming the shared Caddy, connector, and `edge-portfolio` network exist.
+6. Recreate only the portfolio service and verify its health through the shared Caddy ingress.
 
-The connector token is stored only as `/opt/tuan-portfolio/.tunnel-token` with mode `0600`; it is
-never committed or copied by the deployment workflow. The `production` GitHub environment holds
+The shared connector token is stored only as `/opt/edge/secrets/tunnel-token` with mode `0600`; it
+is never committed or copied by the application deployment workflow. The `production` GitHub environment holds
 `VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and `VPS_KNOWN_HOSTS`. The workflow uses the
 short-lived `GITHUB_TOKEN` for each image pull and logs the VPS out of GitHub Container Registry
 afterward.

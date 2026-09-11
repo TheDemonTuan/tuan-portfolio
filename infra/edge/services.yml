@@ -1,0 +1,11 @@
+version: 1
+services:
+  - app: portfolio
+    hostnames:
+      - tuannguyenviet.site
+    network: edge-portfolio
+    upstream: portfolio-web:8080
+    health_path: /healthz
+    authentication: public
+    methods: [GET, HEAD]
+    route_file: config/routes/tuannguyenviet.site.conf

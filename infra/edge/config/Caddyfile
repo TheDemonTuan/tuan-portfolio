@@ -1,0 +1,17 @@
+{
+	auto_https off
+	admin 127.0.0.1:2019
+
+	servers :8080 {
+		trusted_proxies static 172.31.250.2/32
+		trusted_proxies_strict
+		client_ip_headers CF-Connecting-IP
+		max_header_size 32KB
+		timeouts {
+			read_header 10s
+			idle 60s
+		}
+	}
+}
+
+import routes/*.conf

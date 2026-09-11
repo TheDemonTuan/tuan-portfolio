@@ -1,18 +1,22 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const externalBaseUrl = process.env.BASE_URL;
+
 export default defineConfig({
   testDir: "./tests",
   testMatch: "**/*.spec.ts",
   fullyParallel: true,
   use: {
-    baseURL: "http://127.0.0.1:4321",
+    baseURL: externalBaseUrl ?? "http://127.0.0.1:4321",
     trace: "on-first-retry",
   },
-  webServer: {
-    command: "npm run dev -- --host 127.0.0.1",
-    url: "http://127.0.0.1:4321",
-    reuseExistingServer: true,
-  },
+  webServer: externalBaseUrl
+    ? undefined
+    : {
+        command: "npm run dev -- --host 127.0.0.1",
+        url: "http://127.0.0.1:4321",
+        reuseExistingServer: true,
+      },
   projects: [
     // 1512 is where the hanging section numerals move into the outer margin,
     // so it needs its own project to be covered at all.

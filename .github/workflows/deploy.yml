@@ -34,6 +34,9 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build
+      - run: bash tests/deploy-script.test.sh
+      - run: bash tests/image-retention.test.sh
+      - run: bash tests/edge-config.test.sh
 
   image:
     name: Build image → GHCR
@@ -104,18 +107,22 @@ jobs:
           printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
-      - name: Sync deployment files
+      - name: Stage deployment files
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
         run: |
           set -euo pipefail
+          ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" -o BatchMode=yes \
+            "$VPS_USER@$VPS_HOST" \
+            'docker inspect edge-caddy edge-cloudflared >/dev/null && docker network inspect edge-portfolio >/dev/null && mkdir -p /opt/tuan-portfolio/.staged'
           scp -i ~/.ssh/id_ed25519 -P "$VPS_PORT" -o BatchMode=yes \
             compose.yml scripts/deploy.sh scripts/image-retention.sh \
-            "$VPS_USER@$VPS_HOST:/opt/tuan-portfolio/"
+            "$VPS_USER@$VPS_HOST:/opt/tuan-portfolio/.staged/"
           ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" -o BatchMode=yes \
-            "$VPS_USER@$VPS_HOST" 'chmod 755 /opt/tuan-portfolio/deploy.sh'
+            "$VPS_USER@$VPS_HOST" \
+            'chmod 755 /opt/tuan-portfolio/.staged/deploy.sh'
       - name: Log VPS in to GHCR
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
@@ -136,7 +143,8 @@ jobs:
         run: |
           set -euo pipefail
           ssh -i ~/.ssh/id_ed25519 -p "$VPS_PORT" -o BatchMode=yes \
-            "$VPS_USER@$VPS_HOST" "/opt/tuan-portfolio/deploy.sh '$IMAGE_REF'"
+            "$VPS_USER@$VPS_HOST" \
+            "install -m 0755 /opt/tuan-portfolio/.staged/deploy.sh /opt/tuan-portfolio/deploy.sh && install -m 0644 /opt/tuan-portfolio/.staged/image-retention.sh /opt/tuan-portfolio/image-retention.sh && /opt/tuan-portfolio/deploy.sh '$IMAGE_REF' /opt/tuan-portfolio/.staged/compose.yml"
       - name: Report deployment status
         if: always()
         env:
