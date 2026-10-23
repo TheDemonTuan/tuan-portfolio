@@ -1,0 +1,53 @@
+name: Pull request CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate portfolio
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check types and formatting
+        run: npm run check
+      - name: Build production site
+        run: npm run build
+      - name: Install test browser
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Run browser and deployment regression tests
+        run: npm test
+
+  required:
+    name: Required CI
+    if: ${{ always() }}
+    needs: [validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful validation
+        env:
+          VALIDATION_RESULT: ${{ needs.validate.result }}
+        run: |
+          if [ "$VALIDATION_RESULT" != "success" ]; then
+            echo "Portfolio validation did not succeed: $VALIDATION_RESULT"
+            exit 1
+          fi
