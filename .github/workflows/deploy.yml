@@ -42,11 +42,11 @@ jobs:
     permissions:
       contents: read
       packages: write
-    uses: TheDemonTuan/vps-deploy/.github/workflows/build-docker.yml@1dfdde26b2849725db8aea0e8c5ed62533185462
+    uses: TheDemonTuan/vps-deploy/.github/workflows/build-docker.yml@e5d34609ed81a5200174469706b3bd899aa7a02b
     with:
       app: tuan-portfolio
       source-sha: ${{ github.sha }}
-      platform-ref: 1dfdde26b2849725db8aea0e8c5ed62533185462
+      platform-ref: e5d34609ed81a5200174469706b3bd899aa7a02b
       config: .deploy/app.yml
       component: app
 
@@ -62,7 +62,7 @@ jobs:
       url: https://tuannguyenviet.site
     steps:
       - name: Deploy application via platform
-        uses: TheDemonTuan/vps-deploy/.github/actions/deploy@1dfdde26b2849725db8aea0e8c5ed62533185462
+        uses: TheDemonTuan/vps-deploy/.github/actions/deploy@e5d34609ed81a5200174469706b3bd899aa7a02b
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         with:
@@ -71,6 +71,6 @@ jobs:
           operation: deploy
           component: app
           source-sha: ${{ github.sha }}
-          platform-ref: 1dfdde26b2849725db8aea0e8c5ed62533185462
+          platform-ref: e5d34609ed81a5200174469706b3bd899aa7a02b
           config: .deploy/app.yml
           image-ref: ${{ needs.build.outputs.image-ref }}
