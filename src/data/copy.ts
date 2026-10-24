@@ -3,264 +3,261 @@ import type { L10n } from "./i18n";
 
 export const home = {
   title: {
-    en: "Nguyễn Viết Tuấn — backend developer",
-    vi: "Nguyễn Viết Tuấn — lập trình viên backend",
+    en: "Nguyễn Viết Tuấn — backend systems & AI workflows",
+    vi: "Nguyễn Viết Tuấn — hệ thống backend & luồng AI",
   } satisfies L10n,
   description: {
-    en: "Backend developer in Hanoi. Source-backed notes on operating OmniRoute, building production workflows and solving upstream failures.",
-    vi: "Lập trình viên backend tại Hà Nội. Ghi chép có dẫn chứng về vận hành OmniRoute, xây workflow production và giải quyết lỗi upstream.",
+    en: "Backend developer in Hanoi. Explore public systems, AI workflows and historical upstream contributions through source-backed technical writing.",
+    vi: "Lập trình viên backend tại Hà Nội. Khám phá hệ thống công khai, luồng AI và đóng góp upstream trong lịch sử qua bài viết kỹ thuật có dẫn chứng.",
   } satisfies L10n,
   headline: {
-    en: "I build the path from a broken system to a release I can explain.",
-    vi: "Tôi xây đường đi từ một hệ thống đang hỏng đến một release có thể giải thích.",
+    en: "Backend systems. AI workflows. Built with evidence.",
+    vi: "Hệ thống backend. Luồng AI. Dẫn chứng từ code.",
   } satisfies L10n,
   lede: {
     en: [
-      "Backend developer in Hanoi, working where application code meets runtimes and operations. I trace startup crashes, capacity bugs and bundler failures; then carry the fix through tests, containers and a production VPS. The pages below show the decisions, source and diffs rather than a list of claims.",
+      "I work at the boundaries between application code, runtimes and operations. These are the systems I build, the trade-offs behind them, and the public source that lets you inspect the work.",
     ],
     vi: [
-      "Lập trình viên backend tại Hà Nội, làm việc tại nơi code ứng dụng gặp runtime và vận hành. Tôi truy vết crash lúc khởi động, lỗi tính tải và lỗi bundler; sau đó đưa bản sửa đi qua test, container và VPS production. Các trang dưới trình bày quyết định, source và diff thay vì một danh sách lời tự nhận.",
+      "Tôi làm việc tại ranh giới giữa code ứng dụng, runtime và vận hành. Đây là những hệ thống tôi xây, những đánh đổi phía sau và source công khai để bạn tự xem xét công việc.",
     ],
   } satisfies L10n<RichText>,
-  selectedTitle: { en: "Selected contributions", vi: "Đóng góp tiêu biểu" } satisfies L10n,
-  selectedNote: {
-    en: "Three investigations, six merged pull requests. Each write-up follows the same shape: what the subsystem does, what was broken, what changed, and what evidence exists that it worked.",
-    vi: "Ba lần truy vết, sáu pull request đã merge. Mỗi bài viết theo cùng một cấu trúc: hệ thống con đó làm gì, cái gì đã hỏng, đã thay đổi những gì, và bằng chứng nào cho thấy nó hiệu quả.",
+  writingTitle: { en: "Inside the systems", vi: "Bên trong hệ thống" } satisfies L10n,
+  writingNote: {
+    en: "Architecture, failure boundaries and implementation decisions — with sources, not promises.",
+    vi: "Kiến trúc, ranh giới sự cố và quyết định triển khai — có nguồn, không phải lời hứa.",
   } satisfies L10n,
-  personalTitle: { en: "Own work", vi: "Việc tự làm" } satisfies L10n,
+  personalTitle: { en: "Selected systems", vi: "Hệ thống tiêu biểu" } satisfies L10n,
   personalNote: {
-    en: "Not upstream contributions — these run in a personal fork or on my own infrastructure, and are listed separately for that reason.",
-    vi: "Không phải đóng góp upstream — những thứ này chạy trong fork cá nhân hoặc trên hạ tầng của riêng tôi, nên được liệt kê tách biệt.",
+    en: "Current public work. Original projects and maintained forks are attributed separately; each card leads back to its repository and evidence.",
+    vi: "Công việc công khai hiện tại. Dự án tự xây và fork đang phát triển được ghi công riêng; mỗi mục đều dẫn về repository và dẫn chứng.",
   } satisfies L10n,
-  stackTitle: { en: "Tools", vi: "Công cụ" } satisfies L10n,
+  selectedTitle: { en: "Evidence upstream", vi: "Dẫn chứng từ upstream" } satisfies L10n,
+  selectedNote: {
+    en: "Historical merged contributions, separate from the current project catalogue. The figures below are calculated from the linked pull requests, not live repository counters.",
+    vi: "Đóng góp đã merge trong lịch sử, tách biệt với catalogue dự án hiện tại. Các số dưới đây được tính từ pull request có liên kết, không phải bộ đếm repository trực tiếp.",
+  } satisfies L10n,
+  stackTitle: { en: "Tools with a source", vi: "Công cụ có dẫn chứng" } satisfies L10n,
   stackNote: {
-    en: "Marked entries appear in a patch that was merged upstream. The rest are used in personal or private work, and are not claimed as anything more.",
-    vi: "Những mục có đánh dấu xuất hiện trong một bản vá đã merge upstream. Phần còn lại được dùng trong công việc cá nhân hoặc riêng tư, và không được nhận là gì hơn thế.",
+    en: "Each tool links to public work: a current repository or a historical merged contribution, with its provenance visible.",
+    vi: "Mỗi công cụ dẫn tới công việc công khai: repository hiện tại hoặc đóng góp đã merge trong lịch sử, với nguồn ghi rõ.",
   } satisfies L10n,
-  contactTitle: { en: "Contact", vi: "Liên hệ" } satisfies L10n,
+  contactTitle: {
+    en: "Let’s work on the next system.",
+    vi: "Cùng xây hệ thống tiếp theo.",
+  } satisfies L10n,
 };
 
 export const work = {
-  title: {
-    en: "Notes and work — Nguyễn Viết Tuấn",
-    vi: "Ghi chép và dự án — Nguyễn Viết Tuấn",
-  } satisfies L10n,
+  title: { en: "Work — Nguyễn Viết Tuấn", vi: "Dự án — Nguyễn Viết Tuấn" } satisfies L10n,
   description: {
-    en: "Operations field notes, personal infrastructure and six upstream pull requests for OmniRoute.",
-    vi: "Ghi chép vận hành, hạ tầng cá nhân và sáu pull request upstream cho OmniRoute.",
+    en: "Source-backed writing, current public repositories and historical merged upstream contributions by Nguyễn Viết Tuấn.",
+    vi: "Bài viết có dẫn chứng, repository công khai hiện tại và đóng góp upstream đã merge trong lịch sử của Nguyễn Viết Tuấn.",
   } satisfies L10n,
-  headline: { en: "Notes, systems and fixes", vi: "Ghi chép, hệ thống và bản sửa" } satisfies L10n,
+  headline: { en: "Systems, explained.", vi: "Hệ thống, có lời giải." } satisfies L10n,
+  lede: {
+    en: "Follow the architecture, inspect the repository, or read a merged diff. Writing, personal work and upstream history are separate views of the same engineering practice.",
+    vi: "Theo dõi kiến trúc, xem repository hoặc đọc diff đã merge. Bài viết, dự án cá nhân và lịch sử upstream là những góc nhìn riêng của cùng một cách làm kỹ thuật.",
+  } satisfies L10n,
+  writingNote: {
+    en: "Long-form notes on mechanisms, decisions and limits. The source snapshot belongs to each article; it is not a claim about a live deployment.",
+    vi: "Ghi chép dài về cơ chế, quyết định và giới hạn. Snapshot source thuộc về từng bài; đó không phải khẳng định về một deployment đang chạy.",
+  } satisfies L10n,
+  personalTitle: {
+    en: "Public repository catalogue",
+    vi: "Catalogue repository công khai",
+  } satisfies L10n,
+  personalNote: {
+    en: "Ownership is explicit. A maintained fork is not an original upstream project, and an infrastructure integration does not claim authorship of the software it deploys.",
+    vi: "Quyền tác giả được ghi rõ. Fork đang phát triển không phải dự án upstream tự viết, và tích hợp hạ tầng không nhận tác giả phần mềm được triển khai.",
+  } satisfies L10n,
   scopeNote: {
-    en: "Focused fixes and runtime hardening, not feature epics. Diff sizes are as merged, and every link goes to the pull request itself.",
-    vi: "Là những bản vá tập trung và việc siết chặt runtime, không phải các epic tính năng. Kích thước diff đúng như lúc merge, và mọi link đều trỏ thẳng tới pull request.",
+    en: "Historical upstream work in OmniRoute. Every metric comes from the merged PR records below; these are not totals for the current personal repositories.",
+    vi: "Công việc upstream trong lịch sử tại OmniRoute. Mọi số liệu lấy từ các PR đã merge bên dưới; đây không phải tổng của các repository cá nhân hiện tại.",
   } satisfies L10n,
-  personalTitle: { en: "Own work", vi: "Việc tự làm" } satisfies L10n,
+  profileNote: {
+    en: "Profile metadata, not a product case study.",
+    vi: "Metadata hồ sơ, không phải case study sản phẩm.",
+  } satisfies L10n,
+};
+
+export const contribution = {
+  provenance: {
+    en: "Historical merged upstream work. This contribution belongs to OmniRoute’s history, not to the current personal-project catalogue.",
+    vi: "Đóng góp upstream đã merge trong lịch sử. Đóng góp này thuộc lịch sử OmniRoute, không phải catalogue dự án cá nhân hiện tại.",
+  } satisfies L10n,
 };
 
 export const about = {
   title: { en: "About — Nguyễn Viết Tuấn", vi: "Giới thiệu — Nguyễn Viết Tuấn" } satisfies L10n,
   description: {
-    en: "Backend developer in Hanoi, working on runtimes, containers and the parts of a system that fail before the application starts.",
-    vi: "Lập trình viên backend tại Hà Nội, làm việc với runtime, container và những phần của hệ thống hỏng trước cả khi ứng dụng khởi động.",
+    en: "Backend developer in Hanoi working across application boundaries, runtimes, infrastructure and AI workflows.",
+    vi: "Lập trình viên backend tại Hà Nội, làm việc qua ranh giới ứng dụng, runtime, hạ tầng và luồng AI.",
   } satisfies L10n,
-  headline: { en: "About", vi: "Giới thiệu" } satisfies L10n,
+  headline: {
+    en: "Understand the boundary. Build the system.",
+    vi: "Hiểu ranh giới. Xây hệ thống.",
+  } satisfies L10n,
   bio: [
     {
       en: [
-        "I am a backend developer based in Hanoi. I have three public repositories, which is not much of a portfolio — so this site is built around the work itself instead: six patches merged into ",
-        { link: "OmniRoute", href: "https://github.com/diegosouzapw/OmniRoute" },
-        ", an MIT-licensed AI gateway maintained by more than 450 contributors.",
+        "I’m Nguyễn Viết Tuấn, a backend developer based in Hanoi. My public work covers AI gateways, durable jobs and webhooks, resumable uploads, container operations and the infrastructure around them.",
       ],
       vi: [
-        "Tôi là một lập trình viên backend sống ở Hà Nội. Tôi có ba repository công khai, tự nó chưa phải là một portfolio — nên trang này được dựng quanh chính công việc: sáu bản vá đã merge vào ",
-        { link: "OmniRoute", href: "https://github.com/diegosouzapw/OmniRoute" },
-        ", một AI gateway giấy phép MIT do hơn 450 người cùng duy trì.",
+        "Tôi là Nguyễn Viết Tuấn, lập trình viên backend tại Hà Nội. Công việc công khai của tôi trải từ AI gateway, job và webhook bền vững, upload tiếp tục được đến vận hành container và hạ tầng xung quanh.",
       ],
     },
     {
       en: [
-        "The work I gravitate towards sits below the application: why a container aborts before the server exists, why a limiter rejects work on an idle machine, why a build fails on a file that is supposed to be generated later. These problems are usually not visible from the code that reports them, and the fix is usually small once the cause is actually understood.",
+        "I’m interested in what happens between components: who owns a request, what survives a crash, which signal is actually healthy, and where privilege should stop. The useful answer is usually a clear boundary and a mechanism another person can inspect.",
       ],
       vi: [
-        "Loại việc tôi bị cuốn vào nằm bên dưới tầng ứng dụng: vì sao một container abort trước khi server kịp tồn tại, vì sao một bộ giới hạn từ chối công việc trên một máy đang rảnh, vì sao một bản build thất bại vì một file lẽ ra sẽ được sinh ra sau. Những vấn đề này thường không nhìn thấy được từ đoạn code báo lỗi, và bản vá thường rất nhỏ một khi đã thật sự hiểu nguyên nhân.",
+        "Tôi quan tâm đến điều xảy ra giữa các thành phần: ai sở hữu request, thứ gì tồn tại sau crash, tín hiệu nào thật sự phản ánh sức khỏe và đặc quyền nên dừng ở đâu. Câu trả lời hữu ích thường là một ranh giới rõ cùng cơ chế để người khác kiểm tra được.",
       ],
     },
     {
       en: [
-        "I learn by fixing real systems in the open, where the patch has to survive review by people who maintain the code every day. That constraint is the reason the work is worth showing at all.",
+        "This portfolio keeps original work, maintained forks and historical upstream contributions distinct. The writing shows the source and the limits alongside the design, so you can judge the work without relying on a title or a live counter.",
       ],
       vi: [
-        "Tôi học bằng cách sửa những hệ thống thật một cách công khai, nơi bản vá phải sống sót qua review của những người ngày nào cũng duy trì đoạn code đó. Chính ràng buộc ấy là lý do công việc này đáng để trưng ra.",
+        "Portfolio này phân biệt dự án tự xây, fork đang phát triển và đóng góp upstream trong lịch sử. Bài viết đặt source và giới hạn cạnh thiết kế, để bạn đánh giá công việc mà không cần dựa vào chức danh hay bộ đếm trực tiếp.",
       ],
     },
   ] satisfies readonly L10n<RichText>[],
   principlesTitle: { en: "How I work", vi: "Cách tôi làm việc" } satisfies L10n,
   principles: [
     {
-      title: { en: "Reproduce before patching", vi: "Tái hiện trước khi vá" } satisfies L10n,
+      title: { en: "Trace before changing", vi: "Truy vết trước khi đổi" },
       body: {
-        en: "Every fix on this site started with a test that failed for the reported reason, so the patch has something to prove rather than something to claim.",
-        vi: "Mọi bản vá trên trang này đều bắt đầu bằng một test thất bại đúng vì lý do đã báo cáo, để bản vá có thứ để chứng minh thay vì thứ để tuyên bố.",
-      } satisfies L10n,
+        en: "Find the failing boundary and understand the mechanism before choosing the patch. Keep the evidence close to the explanation.",
+        vi: "Tìm ranh giới gây lỗi và hiểu cơ chế trước khi chọn bản vá. Đặt dẫn chứng gần lời giải thích.",
+      },
     },
     {
-      title: { en: "Move failures earlier", vi: "Đẩy lỗi ra sớm hơn" } satisfies L10n,
+      title: { en: "Make ownership explicit", vi: "Làm rõ trách nhiệm" },
       body: {
-        en: "A crash at startup is better than a crash in production, and a failed build is better than both. Where possible I make the broken state impossible to produce.",
-        vi: "Một cú crash lúc khởi động tốt hơn một cú crash trên production, và một bản build thất bại thì tốt hơn cả hai. Khi có thể, tôi làm cho trạng thái hỏng không thể tạo ra được.",
-      } satisfies L10n,
+        en: "Separate control from traffic, privileged operations from the application, and durable intent from best-effort delivery.",
+        vi: "Tách quản trị khỏi lưu lượng, thao tác đặc quyền khỏi ứng dụng, và ý định bền vững khỏi việc gửi theo best-effort.",
+      },
     },
     {
-      title: { en: "Leave the state readable", vi: "Để lại trạng thái đọc được" } satisfies L10n,
+      title: { en: "Leave a readable system", vi: "Để lại hệ thống đọc được" },
       body: {
-        en: "A limiter nobody can inspect gets tuned by guesswork. If I add a control, I expose what it is currently doing.",
-        vi: "Một bộ giới hạn không ai xem được thì sẽ bị chỉnh bằng cách đoán. Nếu tôi thêm một cơ chế điều khiển, tôi expose luôn trạng thái hiện tại của nó.",
-      } satisfies L10n,
+        en: "Document the state, the recovery path and the limit of each guarantee. A system should remain understandable when something goes wrong.",
+        vi: "Ghi lại trạng thái, đường phục hồi và giới hạn của mỗi bảo đảm. Hệ thống cần vẫn hiểu được khi có sự cố.",
+      },
     },
-  ],
-  stackTitle: { en: "Tools", vi: "Công cụ" } satisfies L10n,
-  contactTitle: { en: "Contact", vi: "Liên hệ" } satisfies L10n,
+  ] satisfies readonly { title: L10n; body: L10n }[],
+  stackTitle: { en: "Tools in public work", vi: "Công cụ trong dự án công khai" } satisfies L10n,
+  contactTitle: { en: "Start a conversation", vi: "Bắt đầu trao đổi" } satisfies L10n,
 };
 
 export interface ColophonBlock {
   readonly id: string;
   readonly title: L10n;
   readonly body: L10n<RichText>;
-  readonly specs?: readonly { readonly key: string; readonly value: string }[];
 }
 
 export const colophon = {
   title: { en: "Colophon — Nguyễn Viết Tuấn", vi: "Kỹ thuật — Nguyễn Viết Tuấn" } satisfies L10n,
   description: {
-    en: "How this site is built, hardened and shipped: Astro static output, a read-only container, digest-pinned deploys and automatic rollback.",
-    vi: "Trang này được dựng, siết chặt và triển khai ra sao: Astro static, container read-only, deploy ghim theo digest và tự động rollback.",
+    en: "The Systems Observatory: Bun, Astro static output, bilingual typed content, local visualization and repository-owned delivery.",
+    vi: "Systems Observatory: Bun, đầu ra Astro tĩnh, nội dung có kiểu song ngữ, trực quan cục bộ và triển khai do repository quản lý.",
   } satisfies L10n,
   headline: {
-    en: "How this site is built and shipped",
-    vi: "Trang này được dựng và triển khai ra sao",
+    en: "The system behind the observatory.",
+    vi: "Hệ thống phía sau đài quan sát.",
   } satisfies L10n,
   lede: {
     en: [
-      "This page is here because the deployment is part of the portfolio. Everything described below is in the repository and can be read.",
+      "The site is part of the work. Its content, visual system and delivery boundary are kept in the repository, without live GitHub requests or an application server in production.",
     ],
     vi: [
-      "Trang này tồn tại vì bản thân việc triển khai cũng là một phần của portfolio. Mọi thứ mô tả bên dưới đều nằm trong repository và đọc được.",
+      "Bản thân website là một phần của công việc. Nội dung, visual system và ranh giới triển khai được giữ trong repository, không gọi GitHub trực tiếp hay chạy application server trên production.",
     ],
   } satisfies L10n<RichText>,
   blocks: [
     {
       id: "build",
-      title: { en: "Build", vi: "Build" },
+      title: { en: "Static by construction", vi: "Tĩnh từ kiến trúc" },
       body: {
         en: [
-          "Astro with static output and no client framework. There is not a single ",
-          { code: "<script src>" },
-          " on any page: the home page ships 2.4 KB of inline JavaScript, unminified, doing three things — applying the stored theme before paint, running the theme switch, and reassembling an email address that is stored split so it is not sitting in the HTML for scrapers. No hydration, no island, nothing to hydrate.",
+          "Bun installs the dependencies and runs the development and build tools. Astro renders the shared views into static HTML; Bun’s native checker and Astro’s checker cover their respective source formats. Production serves the build from unprivileged Nginx, not a Bun application server. There is no client framework or hydration layer.",
         ],
         vi: [
-          "Astro với static output và không dùng framework phía client. Không một trang nào có lấy một thẻ ",
-          { code: "<script src>" },
-          ": trang chủ gửi đi 2,4 KB JavaScript inline chưa nén, làm đúng ba việc — áp giao diện đã lưu trước khi paint, xử lý nút đổi giao diện, và ghép lại địa chỉ email vốn được lưu tách phần để nó không nằm sẵn trong HTML cho các bot thu thập. Không hydration, không island, không có gì để hydrate.",
+          "Bun cài dependency và chạy công cụ phát triển, build. Astro render các view dùng chung thành HTML tĩnh; native checker của Bun và checker của Astro kiểm tra các định dạng source tương ứng. Production phục vụ bản build bằng Nginx không đặc quyền, không phải application server Bun. Không có client framework hay lớp hydration.",
         ],
       },
-      specs: [
-        { key: "Framework", value: "Astro 7, output: static" },
-        { key: "Client JS", value: "2.4 KB inline, 0 bundles, no framework" },
-        { key: "First load", value: "~205 KB, of which ~167 KB is type" },
-        { key: "Fonts", value: "Self-hosted woff2, subset by unicode-range" },
-      ],
+    },
+    {
+      id: "scene",
+      title: { en: "HTML first, local visualization", vi: "HTML trước, trực quan cục bộ" },
+      body: {
+        en: [
+          "The observatory starts as a static orbital SVG with ordinary project links. A lightweight controller imports local Three.js only for eligible desktop devices near the viewport: at least 960px wide, fine pointer, hover, no reduced-motion preference and no data-saving request. The renderer replaces the SVG only after a successful first frame, stops continuous motion while paused, hidden or offscreen, and releases its resources on teardown. Theme, link highlight and resize still update a paused frame. Eligibility changes and restored pages are re-evaluated; initialization failure or context loss retains the illustration and native links without retrying during that visit. Mobile and no-JavaScript visits never need the renderer to read or navigate.",
+        ],
+        vi: [
+          "Đài quan sát bắt đầu bằng SVG quỹ đạo tĩnh và các liên kết dự án thông thường. Controller nhẹ chỉ import Three.js cục bộ cho desktop đủ điều kiện ở gần viewport: rộng ít nhất 960px, con trỏ chính xác, có hover, không yêu cầu giảm chuyển động hay tiết kiệm dữ liệu. Renderer chỉ thay SVG sau frame đầu thành công, dừng chuyển động liên tục khi pause, ẩn hoặc ngoài màn hình và giải phóng tài nguyên khi tháo bỏ. Theme, highlight liên kết và resize vẫn cập nhật frame đang pause. Điều kiện thiết bị và trang được khôi phục đều được xét lại; lỗi khởi tạo hay context loss giữ hình minh họa cùng link gốc, không thử lại trong lượt truy cập đó. Mobile và chế độ không JavaScript không cần renderer để đọc hay điều hướng.",
+        ],
+      },
     },
     {
       id: "type",
-      title: { en: "Type", vi: "Chữ" },
+      title: { en: "Type and visual language", vi: "Chữ và ngôn ngữ thị giác" },
       body: {
         en: [
-          "Fraunces carries the display type — a variable serif whose ",
-          { code: "WONK" },
-          " axis deliberately breaks the letterforms out of their regular shapes. Newsreader sets the prose and IBM Plex Mono carries every number, label and code fragment. All three are self-hosted and all three include the Vietnamese subset, which is not optional on a site whose author's name is Nguyễn Viết Tuấn.",
+          "Systems Observatory uses orbital geometry, a restrained grid and solid surfaces rather than a simulated terminal. Manrope sets display type, Be Vietnam Pro carries the body, and IBM Plex Mono handles metadata and code. Fonts are self-hosted with unicode-range coverage, including Vietnamese. No font CDN, model download or remote texture is needed.",
         ],
         vi: [
-          "Fraunces đảm nhiệm phần chữ display — một serif biến thiên có trục ",
-          { code: "WONK" },
-          " cố tình bẻ các con chữ ra khỏi hình dạng chuẩn của chúng. Newsreader dùng cho văn xuôi và IBM Plex Mono gánh mọi con số, nhãn và mảnh code. Cả ba đều tự host và cả ba đều có subset tiếng Việt — điều không thể bỏ qua trên một trang mà tên tác giả là Nguyễn Viết Tuấn.",
+          "Systems Observatory dùng hình học quỹ đạo, lưới tiết chế và bề mặt đủ đặc thay vì mô phỏng terminal. Manrope dùng cho display, Be Vietnam Pro cho nội dung và IBM Plex Mono cho metadata, code. Font tự host với phạm vi unicode-range, bao gồm tiếng Việt. Không cần CDN font, tải model hay texture từ xa.",
         ],
       },
     },
     {
-      id: "image",
-      title: { en: "Image", vi: "Image" },
+      id: "content",
+      title: { en: "One content model, two languages", vi: "Một mô hình nội dung, hai ngôn ngữ" },
       body: {
         en: [
-          "A two-stage build compiles the site on ",
-          { code: "node:24-alpine" },
-          " and copies the output into ",
-          { code: "nginx-unprivileged" },
-          ", which runs as a non-root user. The filesystem is read-only, all capabilities are dropped, privilege escalation is disabled, and the only writable paths are three size-limited tmpfs mounts.",
+          "Typed TypeScript data supplies English and Vietnamese versions to shared Astro views. English routes are unprefixed; Vietnamese routes live under /vi/. Locale switching preserves the page instead of returning to a language homepage. Repository ownership and pinned source evidence are editorial snapshots. Historical PR totals are computed from the recorded merged contributions, not fetched as live counters.",
         ],
         vi: [
-          "Một bản build hai giai đoạn biên dịch trang trên ",
-          { code: "node:24-alpine" },
-          " rồi chép kết quả vào ",
-          { code: "nginx-unprivileged" },
-          ", chạy dưới một user không phải root. Filesystem là read-only, mọi capability bị loại bỏ, việc leo thang đặc quyền bị vô hiệu hoá, và ba tmpfs có giới hạn dung lượng là những đường ghi duy nhất.",
+          "Dữ liệu TypeScript có kiểu cung cấp bản tiếng Anh và tiếng Việt cho các view Astro dùng chung. Route tiếng Anh không có prefix; tiếng Việt nằm dưới /vi/. Đổi ngôn ngữ giữ nguyên trang thay vì đưa về trang chủ của ngôn ngữ đó. Quyền tác giả repository và source ghim commit là snapshot biên tập. Tổng PR trong lịch sử được tính từ các đóng góp đã merge được ghi nhận, không lấy từ bộ đếm trực tiếp.",
         ],
       },
-      specs: [
-        { key: "Runtime", value: "nginx-unprivileged:1.29-alpine, uid 101" },
-        { key: "Filesystem", value: "read_only, cap_drop ALL, no-new-privileges" },
-        { key: "Limits", value: "128 MB, 0.5 CPU, pids_limit 100" },
-      ],
+    },
+    {
+      id: "theme",
+      title: { en: "A readable light and dark edition", vi: "Bản sáng và tối đều đọc được" },
+      body: {
+        en: [
+          "Light HTML is complete without JavaScript. A small synchronous bootstrap follows the operating-system preference unless an explicit choice exists; the binary theme control uses the portfolio-theme storage key. Storage denial does not prevent switching. Headings, native scrolling, visible keyboard focus and ordinary links remain the navigation model.",
+        ],
+        vi: [
+          "HTML nền sáng hoàn chỉnh khi không có JavaScript. Bootstrap đồng bộ nhỏ theo tùy chọn hệ điều hành trừ khi đã có lựa chọn rõ; nút đổi hai giao diện dùng khóa lưu trữ portfolio-theme. Storage bị từ chối không ngăn đổi giao diện. Heading, cuộn gốc, focus bàn phím nhìn rõ và liên kết thông thường vẫn là mô hình điều hướng.",
+        ],
+      },
     },
     {
       id: "delivery",
-      title: { en: "Delivery", vi: "Đường ra Internet" },
+      title: { en: "The actual delivery boundary", vi: "Ranh giới triển khai thực tế" },
       body: {
         en: [
-          "The container publishes no host port. Traffic reaches ",
-          { code: "portfolio-web:8080" },
-          " through the VPS-wide Cloudflare Tunnel and shared Caddy gateway. Only Caddy and the site join the internal edge-portfolio network; the connector remains on a separate internal ingress network and cannot connect to the site directly.",
+          "The repository’s workflow builds an ARM64 image and deploys an immutable digest. The static Nginx container runs as a non-root user with a read-only filesystem, dropped capabilities and limited writable tmpfs mounts. It publishes no host port. The shared Cloudflare Tunnel reaches the site through Caddy and separate internal networks. The deployment script records image state, checks container and gateway health, and has a rollback path. This is the portfolio’s current Caddy architecture; the Traefik-based shared platform described in the VPS deployment article is a separate repository, not an infrastructure migration claimed here.",
         ],
         vi: [
-          "Container không publish host port. Lưu lượng tới ",
-          { code: "portfolio-web:8080" },
-          " qua Cloudflare Tunnel và Caddy gateway dùng chung của VPS. Chỉ Caddy và website tham gia mạng edge-portfolio nội bộ; connector nằm trên một mạng ingress nội bộ tách biệt và không thể kết nối trực tiếp tới website.",
+          "Workflow của repository build image ARM64 và triển khai bằng digest bất biến. Container Nginx tĩnh chạy bằng user không phải root, filesystem chỉ đọc, bỏ capability và chỉ có các tmpfs giới hạn để ghi. Không publish port ra host. Cloudflare Tunnel dùng chung tới website qua Caddy và các mạng nội bộ tách biệt. Script triển khai ghi trạng thái image, kiểm tra health container cùng gateway và có đường rollback. Đây là kiến trúc Caddy hiện tại của portfolio; platform dùng chung dựa trên Traefik trong bài triển khai VPS thuộc repository khác, không phải một lần chuyển hạ tầng được khẳng định ở đây.",
         ],
       },
-    },
-    {
-      id: "deploy",
-      title: { en: "Deploy", vi: "Triển khai" },
-      body: {
-        en: [
-          "Every push to ",
-          { code: "main" },
-          " type-checks, builds an ARM64 image, publishes it to the registry, and deploys it over SSH by immutable digest — the deploy script rejects a mutable tag outright. Deploys are serialised with a lock rather than queued, the active and previous digests are recorded, and a rollback is wired to the shell's own error trap. If the replacement fails either its container health check or a direct request to ",
-          { code: "/healthz" },
-          " through the shared gateway within ninety seconds, the previous image and Compose configuration come back. Old images are removed only after a successful health check, and never with a host-wide prune.",
-        ],
-        vi: [
-          "Mỗi lần push lên ",
-          { code: "main" },
-          " sẽ type-check, build image ARM64, publish lên registry, rồi triển khai qua SSH theo digest bất biến — script deploy từ chối thẳng một tag có thể thay đổi. Các lượt deploy được tuần tự hoá bằng lock chứ không xếp hàng, digest hiện tại và trước đó đều được ghi lại, và cơ chế rollback gắn thẳng vào error trap của shell. Nếu bản thay thế thất bại ở health check của container hoặc ở một request trực tiếp tới ",
-          { code: "/healthz" },
-          " qua gateway dùng chung trong vòng chín mươi giây, image và cấu hình Compose trước đó sẽ quay lại. Image cũ chỉ bị xoá sau khi health check thành công, và không bao giờ bằng một lệnh prune toàn máy.",
-        ],
-      },
-      specs: [
-        { key: "Pinning", value: "Digest only, mutable tags rejected" },
-        { key: "Concurrency", value: "flock, non-blocking" },
-        { key: "Rollback", value: "Automatic, on ERR trap, 90 s health window" },
-      ],
     },
     {
       id: "headers",
-      title: { en: "Headers", vi: "Header" },
+      title: { en: "The policy actually served", vi: "Policy thực sự được phục vụ" },
       body: {
         en: [
-          "Self-hosting the fonts let the content security policy drop its third-party style and font origins entirely, so every stylesheet, script and font on this page comes from its own origin.",
+          "The policy below matches Nginx’s HTML and asset responses. Scripts, styles, fonts and the local visualization use the same origin; the listed Cloudflare Insights origins are explicit exceptions. There is no unsafe-eval, remote renderer CDN or worker origin added for the scene. A policy is one layer of the deployment boundary, not a security certification.",
         ],
         vi: [
-          "Việc tự host font cho phép content security policy loại bỏ hoàn toàn các origin bên thứ ba cho style và font, nên mọi stylesheet, script và font trên trang này đều đến từ chính origin của nó.",
+          "Policy dưới đây khớp với response HTML và asset của Nginx. Script, style, font và trực quan cục bộ dùng cùng origin; các origin Cloudflare Insights được liệt kê là ngoại lệ rõ ràng. Scene không cần thêm unsafe-eval, CDN renderer từ xa hay worker origin. Policy là một lớp trong ranh giới triển khai, không phải chứng nhận an toàn.",
         ],
       },
     },
@@ -270,12 +267,12 @@ export const colophon = {
 export const notFound = {
   title: { en: "404 — Nguyễn Viết Tuấn", vi: "404 — Nguyễn Viết Tuấn" } satisfies L10n,
   description: {
-    en: "That page does not exist.",
-    vi: "Trang đó không tồn tại.",
+    en: "This signal does not lead to a page. Return to the portfolio or explore the work.",
+    vi: "Tín hiệu này không dẫn tới trang nào. Trở về portfolio hoặc khám phá dự án.",
   } satisfies L10n,
-  headline: { en: "No such page.", vi: "Không có trang này." } satisfies L10n,
+  headline: { en: "Lost signal.", vi: "Mất tín hiệu." } satisfies L10n,
   body: {
-    en: "The address does not match anything here. The contributions index is probably what you wanted.",
-    vi: "Địa chỉ này không khớp với thứ gì ở đây. Có lẽ thứ bạn cần là trang danh sách đóng góp.",
+    en: "The address is outside this observatory. There is still a clear route back to the systems, writing and source.",
+    vi: "Địa chỉ này nằm ngoài đài quan sát. Vẫn còn đường rõ ràng để trở lại hệ thống, bài viết và source.",
   } satisfies L10n,
 };

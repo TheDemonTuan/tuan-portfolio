@@ -20,9 +20,9 @@ const { article, lang, featured = false } = Astro.props;
 >
   <div class="article-card__meta">
     <span class="label">{article.eyebrow[lang]}</span>
-    <span class="mono muted"
-      >{article.published.replaceAll("-", ".")} · {article.readTime[lang]}</span
-    >
+    <span class="mono muted">
+      {article.published.replaceAll("-", ".")} · {article.readTime[lang]}
+    </span>
   </div>
   <h3>{article.title[lang]}</h3>
   <p>{article.description[lang]}</p>

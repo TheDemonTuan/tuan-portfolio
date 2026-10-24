@@ -3,72 +3,87 @@ import ContactList from "../components/ContactList.astro";
 import Prose from "../components/Prose.astro";
 import SectionHead from "../components/SectionHead.astro";
 import StackList from "../components/StackList.astro";
+import { contributions } from "../data/contributions";
 import { about } from "../data/copy";
 import type { Lang } from "../data/i18n";
+import { personalWork } from "../data/personal-work";
 import { site } from "../data/site";
+import { stack } from "../data/stack";
+import { ui } from "../data/ui";
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
+const hasStack =
+  (personalWork.length > 0 || contributions.length > 0) &&
+  stack.some((group) => group.items.length > 0);
 ---
 
-<section class="hero page">
-  <div class="railed">
-    <div class="rail">
-      <dl class="specs" style="margin: 0">
-        <dt>Base</dt>
-        <dd>{site.location[lang]}</dd>
-        <dt>Coords</dt>
-        <dd>{site.coords}</dd>
-        <dt>Zone</dt>
-        <dd>{site.timezone}</dd>
-        <dt>Lang</dt>
-        <dd>{site.languages[lang]}</dd>
-        <dt>Status</dt>
-        <dd>{site.availability[lang]}</dd>
-      </dl>
+<section class="page-hero page">
+  <div class="page-hero__copy">
+    <p class="identity-line">
+      <span>{site.name}</span>
+      <span>{site.role[lang]}</span>
+    </p>
+    <h1>{about.headline[lang]}</h1>
+    <div class="prose">
+      {about.bio.map((paragraph, index) => (
+        <Prose nodes={paragraph[lang]} class={index === 0 ? "lede" : undefined} />
+      ))}
     </div>
-
-    <div>
-      <h1>{about.headline[lang]}</h1>
-      <div class="prose" style="margin-top: var(--s-6)">
-        {
-          about.bio.map((paragraph, index) => (
-            <Prose nodes={paragraph[lang]} class={index === 0 ? "lede" : undefined} />
-          ))
-        }
-      </div>
-    </div>
+  </div>
+  <div class="page-hero__motif">
+    <svg class="orbital-motif" viewBox="0 0 480 400" aria-hidden="true" focusable="false">
+      <path d="M48 200h384M240 40v320" />
+      <ellipse cx="240" cy="200" rx="190" ry="72" transform="rotate(-24 240 200)" />
+      <ellipse cx="240" cy="200" rx="150" ry="105" transform="rotate(32 240 200)" />
+      <ellipse cx="240" cy="200" rx="84" ry="146" transform="rotate(38 240 200)" />
+      <path d="m240 150 44 26v48l-44 26-44-26v-48zm0 0v51m-44-25 44 25 44-25m-44 25v49" />
+      <circle cx="76" cy="271" r="7" />
+      <circle cx="382" cy="108" r="7" />
+      <circle cx="285" cy="332" r="7" />
+    </svg>
+    <dl class="specs">
+      <dt>{ui.location[lang]}</dt>
+      <dd>{site.location[lang]}</dd>
+      <dt>{ui.coordinates[lang]}</dt>
+      <dd>{site.coords}</dd>
+      <dt>{ui.timezone[lang]}</dt>
+      <dd>{site.timezone}</dd>
+      <dt>{ui.languages[lang]}</dt>
+      <dd>{site.languages[lang]}</dd>
+      <dt>{ui.availability[lang]}</dt>
+      <dd>{site.availability[lang]}</dd>
+    </dl>
   </div>
 </section>
 
 <section class="section page" aria-labelledby="principles">
   <SectionHead mark="01" title={about.principlesTitle[lang]} id="principles" />
-
-  <dl class="specs" data-testid="principles">
-    {
-      about.principles.map((principle, index) => (
-        <>
-          <dt>{String(index + 1).padStart(2, "0")}</dt>
-          <dd>
-            <strong>{principle.title[lang]}</strong>
-            <br />
-            <span class="muted">{principle.body[lang]}</span>
-          </dd>
-        </>
-      ))
-    }
-  </dl>
+  <div class="principle-grid" data-testid="principles">
+    {about.principles.map((principle, index) => (
+      <article>
+        <span class="label">{String(index + 1).padStart(2, "0")}</span>
+        <h3>{principle.title[lang]}</h3>
+        <p>{principle.body[lang]}</p>
+      </article>
+    ))}
+  </div>
 </section>
 
-<section class="section page" aria-labelledby="about-tools">
-  <SectionHead mark="02" title={about.stackTitle[lang]} id="about-tools" />
-  <StackList lang={lang} />
-</section>
+{hasStack && (
+  <section class="section page" aria-labelledby="about-tools">
+    <SectionHead mark="02" title={about.stackTitle[lang]} id="about-tools" />
+    <StackList lang={lang} />
+  </section>
+)}
 
 <section class="section page" id="contact" aria-labelledby="about-contact">
   <SectionHead mark="03" title={about.contactTitle[lang]} id="about-contact" />
+  <p class="section-note">
+    {site.availability[lang]} · {site.location[lang]}
+  </p>
   <ContactList lang={lang} />
 </section>

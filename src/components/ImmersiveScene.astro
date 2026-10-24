@@ -1,0 +1,179 @@
+---
+import { localizePath } from "../data/i18n";
+import type { Lang } from "../data/i18n";
+import { personalWork, sceneProjectIds } from "../data/personal-work";
+import { ui } from "../data/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const projects = sceneProjectIds.flatMap((id) => {
+  const project = personalWork.find((entry) => entry.id === id);
+  return project ? [project] : [];
+});
+type Point = readonly [number, number, number];
+const projectPoint = ([x, y, z]: Point) =>
+  [
+    400 + 66 * (0.7526 * x - 0.6585 * z),
+    350 - 66 * (-0.2803 * x + 0.905 * y - 0.3204 * z),
+  ] as const;
+const points = (vertices: readonly Point[]) =>
+  vertices.map((point) => projectPoint(point).join(",")).join(" ");
+const box = (x: number, y: number, z: number, size: number, height: number) => {
+  const h = size / 2;
+  return {
+    top: points([
+      [x - h, y + height, z - h],
+      [x + h, y + height, z - h],
+      [x + h, y + height, z + h],
+      [x - h, y + height, z + h],
+    ]),
+    left: points([
+      [x - h, y, z + h],
+      [x + h, y, z + h],
+      [x + h, y + height, z + h],
+      [x - h, y + height, z + h],
+    ]),
+    right: points([
+      [x + h, y, z - h],
+      [x + h, y, z + h],
+      [x + h, y + height, z + h],
+      [x + h, y + height, z - h],
+    ]),
+  };
+};
+const nodes = projects.map((project, index) => {
+  const angle = (2 * Math.PI * index) / projects.length;
+  const position: Point = [3.8 * Math.cos(angle), 0.3 + 0.25 * (index % 2), 2.5 * Math.sin(angle)];
+  return { project, position, screen: projectPoint(position), shape: box(...position, 0.45, 0.45) };
+});
+const slabs = [0, 0.28, 0.56].map((y) => box(0, y, 0, 1.2, 0.18));
+const rings = [1.4, 2.2, 3.3].map((radius, index) =>
+  points(
+    Array.from({ length: 97 }, (_, step): Point => {
+      const angle = (step * Math.PI) / 48;
+      return [
+        radius * Math.cos(angle),
+        0.15 + 0.12 * Math.sin(angle + index),
+        radius * Math.sin(angle),
+      ];
+    }),
+  ),
+);
+const grid = Array.from({ length: 11 }, (_, index) => index - 5);
+const particles = Array.from({ length: 96 }, (_, index) => ({
+  x: 32 + ((index * 137 + 43) % 736),
+  y: 40 + ((index * 89 + 67) % 500),
+  r: index % 5 === 0 ? 1.4 : 0.7,
+}));
+const [coreX, coreY] = projectPoint([0, 1.3, 0]);
+---
+
+<systems-observatory
+  data-scene-state="static"
+  data-status-static={ui.scene.static[lang]}
+  data-status-loading={ui.scene.loading[lang]}
+  data-status-ready={ui.scene.ready[lang]}
+  data-status-paused={ui.scene.paused[lang]}
+  data-status-unavailable={ui.scene.unavailable[lang]}
+  aria-label={ui.scene.title[lang]}
+>
+  <div class="scene-visual">
+    <svg class="scene-fallback" viewBox="0 0 800 640" aria-hidden="true" focusable="false">
+      <g class="scene-grid">
+        {particles.map((particle) => (
+          <circle cx={particle.x} cy={particle.y} r={particle.r} />
+        ))}
+        {grid.map((line) => (
+          <>
+            <polyline
+              points={points([
+                [line, -0.2, -5],
+                [line, -0.2, 5],
+              ])}
+            />
+            <polyline
+              points={points([
+                [-5, -0.2, line],
+                [5, -0.2, line],
+              ])}
+            />
+          </>
+        ))}
+      </g>
+      {rings.map((ring) => (
+        <polyline class="scene-orbit" points={ring} />
+      ))}
+      {nodes.map((node) => (
+        <polyline class="scene-connection" points={points([[0, 0.3, 0], node.position])} />
+      ))}
+      {slabs.map((slab) => (
+        <g class="scene-slab">
+          <polygon class="scene-slab--side" points={slab.left} />
+          <polygon class="scene-slab--side" points={slab.right} />
+          <polygon class="scene-slab--top" points={slab.top} />
+        </g>
+      ))}
+      <g class="scene-core" transform={`translate(${coreX} ${coreY})`}>
+        <polygon points="0,-40 35,-18 35,20 0,40 -35,20 -35,-18" />
+        <polyline points="0,-40 -18,-8 -35,20 0,14 35,20 18,-8 0,-40" />
+        <polyline points="-35,-18 -18,-8 18,-8 35,-18" />
+        <polyline points="-18,-8 0,14 18,-8" />
+        <polyline points="0,14 0,40" />
+      </g>
+      {nodes.map((node, index) => (
+        <g class="scene-node" data-project-kind={node.project.kind}>
+          <polygon class="scene-slab--side" points={node.shape.left} />
+          <polygon class="scene-slab--side" points={node.shape.right} />
+          <polygon class="scene-slab--top" points={node.shape.top} />
+          <text x={node.screen[0]} y={node.screen[1] + 30} text-anchor="middle">
+            {String(index + 1).padStart(2, "0")}
+          </text>
+        </g>
+      ))}
+    </svg>
+  </div>
+  <nav aria-label={ui.scene.projects[lang]}>
+    <ol class="scene-projects">
+      {projects.map((project, index) => (
+        <li>
+          <a
+            href={
+              project.articleSlug
+                ? localizePath(`/work/${project.articleSlug}/`, lang)
+                : project.url
+            }
+            data-project-id={project.id}
+            data-project-kind={project.kind}
+          >
+            <span class="mono" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span>{project.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <div class="scene-controls">
+    <p class="scene-status" data-scene-status role="status">
+      {ui.scene.static[lang]}
+    </p>
+    <button
+      type="button"
+      data-scene-pause
+      data-pause-label={ui.scene.pause[lang]}
+      data-resume-label={ui.scene.resume[lang]}
+      aria-pressed="false"
+      hidden
+    >
+      {ui.scene.pause[lang]}
+    </button>
+  </div>
+</systems-observatory>
+
+<script>
+  import "../scripts/immersive-scene";
+</script>

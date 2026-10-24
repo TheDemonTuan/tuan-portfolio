@@ -23,20 +23,29 @@ const links = [
 
 <header class="masthead page" role="banner">
   <div class="masthead__bar">
-    <a class="masthead__name" href={localizePath("/", lang)}>{site.name}</a>
+    <a class="masthead__name" href={localizePath("/", lang)}>
+      <svg class="masthead__emblem" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 2 29 9.5v13L16 30 3 22.5v-13Z" stroke="currentColor" />
+        <path
+          d="M9 22V10l14 12V10M9 16l7 4 7-4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linejoin="round"
+        />
+      </svg>
+      {site.name}
+    </a>
 
     <nav class="masthead__nav" aria-label={ui.mainNav[lang]}>
       <div class="masthead__links">
-        {
-          links.map((link) => (
-            <a
-              href={localizePath(link.href, lang)}
-              aria-current={path.startsWith(link.href) ? "page" : undefined}
-            >
-              {link.label}
-            </a>
-          ))
-        }
+        {links.map((link) => (
+          <a
+            href={localizePath(link.href, lang)}
+            aria-current={path.startsWith(link.href) ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
       </div>
       <div class="masthead__tools">
         <LangToggle lang={lang} path={path} />
@@ -44,5 +53,4 @@ const links = [
       </div>
     </nav>
   </div>
-  <hr class="rule rule--double" />
 </header>

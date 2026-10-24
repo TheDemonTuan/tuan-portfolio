@@ -16,8 +16,9 @@ const { lang } = Astro.props;
   data-testid="theme-toggle"
   data-to-light={ui.themeToLight[lang]}
   data-to-dark={ui.themeToDark[lang]}
-  aria-label={ui.themeToDark[lang]}
+  aria-label={`${ui.light[lang]} — ${ui.themeToDark[lang]}`}
   aria-pressed="false"
+  hidden
 >
   <Icon name="moon" class="toggle__icon--dark" />
   <Icon name="sun" class="toggle__icon--light" />
@@ -37,12 +38,13 @@ const { lang } = Astro.props;
     const apply = (theme, persist) => {
       root.dataset.theme = theme;
       root.style.colorScheme = theme;
-      meta?.setAttribute("content", theme === "dark" ? "#12110f" : "#f3f0e9");
+      meta?.setAttribute("content", theme === "dark" ? "#080D16" : "#F4F7FB");
       button.setAttribute("aria-pressed", String(theme === "dark"));
-      button.setAttribute(
-        "aria-label",
-        theme === "dark" ? (button.dataset.toLight ?? "") : (button.dataset.toDark ?? ""),
-      );
+      const label = button.querySelector(
+        theme === "dark" ? ".toggle__label--dark" : ".toggle__label--light",
+      ).textContent;
+      const action = theme === "dark" ? button.dataset.toLight : button.dataset.toDark;
+      button.setAttribute("aria-label", `${label} — ${action}`);
       if (persist) {
         try {
           localStorage.setItem("portfolio-theme", theme);
@@ -67,5 +69,6 @@ const { lang } = Astro.props;
       if (stored === "light" || stored === "dark") return;
       apply(event.matches ? "dark" : "light", false);
     });
+    button.hidden = false;
   })();
 </script>

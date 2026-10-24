@@ -13,9 +13,9 @@ export default defineConfig({
   webServer: externalBaseUrl
     ? undefined
     : {
-        command: "npm run dev -- --host 127.0.0.1",
+        command: "bun run preview --host 127.0.0.1 --port 4321",
         url: "http://127.0.0.1:4321",
-        reuseExistingServer: true,
+        reuseExistingServer: false,
       },
   projects: [
     // 1512 is where the hanging section numerals move into the outer margin,

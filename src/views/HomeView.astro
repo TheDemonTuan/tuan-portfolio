@@ -3,6 +3,7 @@ import ArticleEntry from "../components/ArticleEntry.astro";
 import ContactList from "../components/ContactList.astro";
 import ContribEntry from "../components/ContribEntry.astro";
 import Icon from "../components/Icon.astro";
+import ImmersiveScene from "../components/ImmersiveScene.astro";
 import Prose from "../components/Prose.astro";
 import SectionHead from "../components/SectionHead.astro";
 import StackList from "../components/StackList.astro";
@@ -11,8 +12,9 @@ import { contributions, OMNIROUTE, totals } from "../data/contributions";
 import { home } from "../data/copy";
 import { localizePath } from "../data/i18n";
 import type { Lang } from "../data/i18n";
-import { KIND_LABEL, personalWork } from "../data/personal-work";
+import { KIND_LABEL, personalWork, sceneProjectIds } from "../data/personal-work";
 import { site } from "../data/site";
+import { stack } from "../data/stack";
 import { ui } from "../data/ui";
 
 interface Props {
@@ -20,113 +22,161 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const n = (value: number) => value.toLocaleString("en-US");
-const featuredArticle = articles[0]!;
+const n = (value: number) => value.toLocaleString(lang === "vi" ? "vi-VN" : "en-US");
+const selectedProjects = sceneProjectIds.flatMap((id) => {
+  const project = personalWork.find((entry) => entry.id === id);
+  return project ? [project] : [];
+});
+const latestArticles = articles.slice(0, 3);
+const selectedContributions = contributions.slice(0, 3);
+const hasStack =
+  (personalWork.length > 0 || contributions.length > 0) &&
+  stack.some((group) => group.items.length > 0);
 ---
 
 <section class="hero page">
-  <div class="railed">
-    <div class="rail">
-      <p class="mono muted" style="margin: 0">
-        {site.location[lang]}<br />
-        {site.coords}<br />
-        {site.timezone}
-      </p>
-      <p class="label" style="margin: var(--s-4) 0 0">{site.availability[lang]}</p>
-    </div>
-
-    <div>
-      <h1 class="hero__headline">{home.headline[lang]}</h1>
-      <Prose nodes={home.lede[lang]} class="lede hero__lede" />
-    </div>
-  </div>
-</section>
-
-<div class="page">
-  <hr class="rule rule--strong bleed" />
-
-  <div class="statline" data-testid="statline">
-    <span class="overscale">+{n(totals.additions)}</span>
-    <div class="statline__figures">
-      <div class="statline__figure">
-        <span class="statline__value">{totals.prs}</span>
-        <span class="label">{ui.merged[lang]}</span>
-      </div>
-      <div class="statline__figure">
-        <span class="statline__value">−{n(totals.deletions)}</span>
-        <span class="label">deletions</span>
-      </div>
-      <div class="statline__figure">
-        <span class="statline__value">{totals.files}</span>
-        <span class="label">files</span>
-      </div>
-    </div>
-    <p class="mono muted" style="margin: 0; max-width: 30ch">
-      {OMNIROUTE.name} — {OMNIROUTE.license}, {n(OMNIROUTE.stars)} ★, {OMNIROUTE.contributors} contributors
-      <br />
-      <span class="label">{ui.asOf[lang]} {OMNIROUTE.statsAsOf}</span>
+  <div class="hero__copy">
+    <p class="identity-line">
+      <span>{site.name}</span>
+      <span>{site.location[lang]}</span>
     </p>
+    <h1 class="hero__headline">{home.headline[lang]}</h1>
+    <Prose nodes={home.lede[lang]} class="lede hero__lede" />
+    <div class="hero__actions">
+      <a class="button" href={localizePath("/work/", lang)}>
+        {ui.exploreWork[lang]}
+        <Icon name="arrow" />
+      </a>
+      <a class="button button--secondary" href="#contact">
+        {ui.getInTouch[lang]}
+      </a>
+    </div>
+    <p class="availability">{site.availability[lang]}</p>
   </div>
-
-  <hr class="rule rule--strong bleed" />
-</div>
-
-<section class="section page" aria-labelledby="field-notes">
-  <SectionHead
-    mark="01"
-    title={lang === "vi" ? "Ghi chép mới" : "Latest field note"}
-    id="field-notes"
-  />
-  <ArticleEntry article={featuredArticle} lang={lang} featured />
+  {selectedProjects.length > 0 && (
+    <div class="hero__scene">
+      <ImmersiveScene lang={lang} />
+    </div>
+  )}
 </section>
 
-<section class="section page" aria-labelledby="selected">
-  <SectionHead mark="02" title={home.selectedTitle[lang]} id="selected" />
-  <p class="lede" style="margin-bottom: var(--s-6)">{home.selectedNote[lang]}</p>
+{latestArticles.length > 0 && (
+  <section class="section page" aria-labelledby="writing-title">
+    <SectionHead mark="01" title={home.writingTitle[lang]} id="writing-title" />
+    <p class="section-note">{home.writingNote[lang]}</p>
+    <div class="article-list">
+      {latestArticles.map((article, index) => (
+        <ArticleEntry article={article} lang={lang} featured={index === 0} />
+      ))}
+    </div>
+  </section>
+)}
 
-  {contributions.map((contribution) => <ContribEntry contribution={contribution} lang={lang} />)}
-
-  <p style="margin-top: var(--s-6)">
-    <a class="link-mono" href={localizePath("/work/", lang)}>
-      {ui.allContributions[lang]}
-      <Icon name="arrow" />
-    </a>
-  </p>
-</section>
-
-<section class="section page" aria-labelledby="own-work">
-  <SectionHead mark="03" title={home.personalTitle[lang]} id="own-work" />
-  <p class="marginalia" style="margin-bottom: var(--s-6)">{home.personalNote[lang]}</p>
-
-  <dl class="specs" data-testid="personal-work">
-    {
-      personalWork.map((project) => (
-        <>
-          <dt>{KIND_LABEL[project.kind][lang]}</dt>
-          <dd>
-            {project.url ? (
-              <a href={project.url} target="_blank" rel="noreferrer">
-                {project.title}
+{selectedProjects.length > 0 && (
+  <section class="section page" aria-labelledby="projects-title">
+    <SectionHead mark="02" title={home.personalTitle[lang]} id="projects-title" />
+    <p class="section-note">{home.personalNote[lang]}</p>
+    <div class="project-grid" data-testid="personal-work">
+      {selectedProjects.map((project) => (
+        <article class="project-card">
+          <div class="project-card__meta">
+            <span class="label">{KIND_LABEL[project.kind][lang]}</span>
+            <span class="mono">{project.year}</span>
+          </div>
+          <h3>
+            <a href={project.url} target="_blank" rel="noreferrer">
+              {project.title}
+              <Icon name="arrow-up-right" size={16} />
+            </a>
+          </h3>
+          <p>{project.summary[lang]}</p>
+          <ul class="tags">
+            {project.tech.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+          {project.upstream && (
+            <p class="project-card__upstream">
+              <a href={project.upstream} target="_blank" rel="noreferrer">
+                {ui.upstream[lang]}: {project.upstream.replace("https://github.com/", "")}
               </a>
-            ) : (
-              project.title
+            </p>
+          )}
+          <div class="project-card__links">
+            {project.articleSlug && (
+              <a href={localizePath(`/work/${project.articleSlug}/`, lang)}>
+                {ui.relatedArticle[lang]}
+                <Icon name="arrow" size={15} />
+              </a>
             )}
-            <br />
-            <span class="muted">{project.summary[lang]}</span>
-          </dd>
-        </>
-      ))
-    }
-  </dl>
-</section>
+            <a href={project.evidenceUrl} target="_blank" rel="noreferrer">
+              {ui.source[lang]}
+              <Icon name="arrow-up-right" size={15} />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
 
-<section class="section page" aria-labelledby="tools">
-  <SectionHead mark="04" title={home.stackTitle[lang]} id="tools" />
-  <p class="marginalia" style="margin-bottom: var(--s-6)">{home.stackNote[lang]}</p>
-  <StackList lang={lang} />
-</section>
+{selectedContributions.length > 0 && (
+  <section class="section page" aria-labelledby="contributions-title">
+    <SectionHead mark="03" title={home.selectedTitle[lang]} id="contributions-title" />
+    <p class="section-note">{home.selectedNote[lang]}</p>
+    <div class="evidence-summary" data-testid="statline">
+      <div class="evidence-summary__metric">
+        <strong>{n(totals.prs)}</strong>
+        <span>
+          {ui.merged[lang]} {ui.pullRequests[lang]}
+        </span>
+      </div>
+      <div class="evidence-summary__metric">
+        <strong>+{n(totals.additions)}</strong>
+        <span>{ui.additions[lang]}</span>
+      </div>
+      <div class="evidence-summary__metric">
+        <strong>−{n(totals.deletions)}</strong>
+        <span>{ui.deletions[lang]}</span>
+      </div>
+      <div class="evidence-summary__metric">
+        <strong>{n(totals.files)}</strong>
+        <span>{ui.files[lang]}</span>
+      </div>
+    </div>
+    <p class="source-note">
+      <a href={OMNIROUTE.url} target="_blank" rel="noreferrer">
+        {OMNIROUTE.name}
+      </a>{" "}
+      · {ui.contributionSource[lang]} · {ui.asOf[lang]}{" "}
+      <time datetime={OMNIROUTE.statsAsOf}>{OMNIROUTE.statsAsOf}</time>
+    </p>
+    <div class="contrib-grid">
+      {selectedContributions.map((item) => (
+        <ContribEntry contribution={item} lang={lang} />
+      ))}
+    </div>
+    <p class="section-link">
+      <a class="link-mono" href={`${localizePath("/work/", lang)}#contributions`}>
+        {ui.allContributions[lang]}
+        <Icon name="arrow" />
+      </a>
+    </p>
+  </section>
+)}
+
+{hasStack && (
+  <section class="section page" aria-labelledby="tools">
+    <SectionHead mark="04" title={home.stackTitle[lang]} id="tools" />
+    <p class="section-note">{home.stackNote[lang]}</p>
+    <StackList lang={lang} />
+  </section>
+)}
 
 <section class="section page" id="contact" aria-labelledby="contact-title">
   <SectionHead mark="05" title={home.contactTitle[lang]} id="contact-title" />
+  <p class="section-note">
+    {site.availability[lang]} · {site.location[lang]}
+  </p>
   <ContactList lang={lang} />
 </section>

@@ -3,34 +3,43 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "bun@1.4.4",
   "engines": {
-    "node": ">=22.12.0"
+    "bun": ">=1.4.4"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "check": "astro check && prettier --check .",
-    "format": "prettier --write .",
-    "test": "playwright test && bash tests/deploy-script.test.sh && bash tests/image-retention.test.sh && bash tests/edge-config.test.sh",
-    "astro": "astro"
+    "dev": "bun ./node_modules/astro/bin/astro.mjs dev",
+    "astro": "bun ./node_modules/astro/bin/astro.mjs",
+    "typecheck": "bun ./node_modules/astro/bin/astro.mjs sync && bun check --no-script && bun ./node_modules/astro/bin/astro.mjs check",
+    "build": "bun run typecheck && bun ./node_modules/astro/bin/astro.mjs build",
+    "preview": "bun ./node_modules/astro/bin/astro.mjs preview",
+    "fmt": "bun fmt --no-script --no-config \"**/*.{js,mjs,cjs,ts,tsx,css,html,json,yaml,yml,md,mdx,toml}\" && bunx --bun prettier --write \"src/**/*.astro\"",
+    "fmt:check": "bun fmt --no-script --no-config --check \"**/*.{js,mjs,cjs,ts,tsx,css,html,json,yaml,yml,md,mdx,toml}\" && bunx --bun prettier --check \"src/**/*.astro\"",
+    "check": "bun run typecheck && bun run fmt:check",
+    "test:browser": "bun ./node_modules/playwright/cli.js test",
+    "test:shell": "bash tests/deploy-script.test.sh && bash tests/image-retention.test.sh && bash tests/edge-config.test.sh",
+    "test": "bun run test:browser && bun run test:shell",
+    "og": "bun scripts/make-og.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
-    "@fontsource-variable/fraunces": "^5.3.0",
-    "@fontsource-variable/newsreader": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
-    "astro": "^7.2.6"
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource/be-vietnam-pro": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "astro": "7.4.2",
+    "three": "0.186.1"
   },
-  "allowScripts": {
-    "esbuild": true
-  },
+  "trustedDependencies": [
+    "esbuild"
+  ],
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@playwright/test": "^1.62.1",
-    "lighthouse": "^13.4.1",
-    "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^6.0.3"
+    "@astrojs/check": "0.9.12",
+    "@playwright/test": "1.64.1",
+    "@types/bun": "1.4.4",
+    "@types/three": "0.186.0",
+    "lighthouse": "13.5.0",
+    "prettier": "3.9.10",
+    "prettier-plugin-astro": "1.1.2",
+    "typescript": "6.0.3"
   }
 }

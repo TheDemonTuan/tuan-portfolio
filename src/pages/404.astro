@@ -1,8 +1,8 @@
 ---
 import Icon from "../components/Icon.astro";
 import { notFound } from "../data/copy";
-import BaseLayout from "../layouts/BaseLayout.astro";
 import { ui } from "../data/ui";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
@@ -11,21 +11,42 @@ import { ui } from "../data/ui";
   lang="en"
   indexable={false}
 >
-  <section class="error page" data-testid="not-found">
-    <p class="overscale" style="margin: 0 0 var(--s-5)">404</p>
-    <h1>{notFound.headline.en}</h1>
-    <p class="lede" style="margin-top: var(--s-5)">{notFound.body.en}</p>
-
-    <p style="margin-top: var(--s-7)">
-      <a class="link-mono" href="/work/" style="margin-right: var(--s-5)">
-        {ui.allContributions.en}
-        <Icon name="arrow" />
-      </a>
-      <a class="link-mono" href="/">{ui.home.en}</a>
-    </p>
-
-    <p class="marginalia" style="margin-top: var(--s-8)">
-      <a href="/vi/">Trang này bằng tiếng Việt →</a>
-    </p>
+  <section class="error page page-hero" data-testid="not-found">
+    <div class="page-hero__copy">
+      <p class="label">404</p>
+      <h1>{notFound.headline.en}</h1>
+      <p class="lede">{notFound.body.en}</p>
+      <p class="section-note" lang="vi">
+        <strong>{notFound.headline.vi}</strong> {notFound.body.vi}
+      </p>
+      <nav class="hero__actions" aria-label={ui.recovery.en}>
+        <a class="button" href="/">
+          {ui.homeEnglish.en}
+          <Icon name="arrow" />
+        </a>
+        <a class="button button--secondary" href="/work/">
+          {ui.workEnglish.en}
+        </a>
+        <a class="button button--secondary" href="/vi/" lang="vi">
+          {ui.homeVietnamese.vi}
+        </a>
+        <a class="button button--secondary" href="/vi/work/" lang="vi">
+          {ui.workVietnamese.vi}
+        </a>
+      </nav>
+    </div>
+    <svg
+      class="orbital-motif page-hero__motif"
+      viewBox="0 0 480 400"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M40 200h130m140 0h130M240 32v90m0 156v90" />
+      <path d="M72 274C-8 185 148 93 288 126m74 27c120 71-20 160-175 125" />
+      <ellipse cx="240" cy="200" rx="144" ry="108" transform="rotate(32 240 200)" />
+      <path d="m240 153 42 24v46l-42 24-42-24v-46zm0 0v47m-42-23 42 23 42-23m-42 23v47" />
+      <circle cx="72" cy="274" r="8" />
+      <circle cx="362" cy="153" r="8" />
+    </svg>
   </section>
 </BaseLayout>

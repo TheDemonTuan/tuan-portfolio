@@ -1,43 +1,85 @@
 # Nguyễn Viết Tuấn — Portfolio
 
-Bilingual portfolio for [tuannguyenviet.site](https://tuannguyenviet.site), built with Astro and
-shipped as static files. There is no client framework and no script bundle: the home page sends
-2.4 KB of inline JavaScript and nothing else.
+Bilingual portfolio for [tuannguyenviet.site](https://tuannguyenviet.site), built with Bun and
+Astro and shipped as static files. Systems Observatory combines readable source-backed HTML
+with a local, progressively enhanced Three.js scene; no client framework or live GitHub fetches.
 
 ## Local development
 
-Requires Node.js 22 or 24, and Docker for the production image.
+Requires Bun 1.4.4 or newer, Bash for the shell regression suites, and Docker for the production
+image. The project pins Bun 1.4.4 for reproducible development and CI.
 
 ```bash
-npm install
-npm run dev
-npm run check
-npm test
-npm run build
+bun install
+bun ./node_modules/playwright/cli.js install chromium
+bun run dev --background
 ```
 
-The default URL is `http://localhost:4321`. Playwright needs its browser once:
-`npx playwright install chromium`.
+Invoke Playwright's installed CLI directly with Bun: on Windows, the `bunx.exe` launcher can be
+inherited by Playwright workers and cause their forked process to fail.
+
+The default development URL is `http://localhost:4321`. Stop it with `bun run astro dev stop` before running
+browser tests: Playwright starts a fresh built preview at `http://127.0.0.1:4321` and never reuses
+an existing server. Build before testing:
+
+```bash
+bun run check
+bun run build
+bun run test
+```
+
+`bun run typecheck` first synchronizes Astro types, then runs the native Bun TypeScript checker
+(`bun check --no-script`) and Astro's checker for `.astro` files. `bun run check` also checks formatting;
+`bun run build` includes type checking before generating the static site.
+
+Use `bun run fmt` to format files or `bun run fmt:check` for a read-only formatting check. Bun's
+native formatter handles supported non-Astro files; Prettier and its Astro plugin are retained
+only for `src/**/*.astro`.
+The scripts use `--no-script` with native `bun check` and `bun fmt` because the package scripts
+named `check` and `fmt` otherwise shadow those commands. Use `bun run` to invoke the package scripts.
+The formatter also uses `--no-config` to disable Prettier-compatible configuration discovery so
+native TOML formatting remains available; formatting settings still come from `bunfig.toml`.
+
+Astro and Playwright run their installed CLI files directly with Bun. On this Windows Bun release,
+`bunx --bun` exposes `bunx.exe` as the process executable; forked background servers or browser
+workers then interpret the child script path as a package request. Direct Bun invocation preserves
+the real runtime identity without a Node fallback or dependency patches.
+
+`bun run test:browser` runs the three Playwright projects (desktop-wide, desktop, and mobile)
+against the built preview. Set `BASE_URL` to test an already-running deployment instead; Playwright
+then does not start a local server. `bun run test:shell` runs the Bash deployment, image-retention,
+and edge-configuration regression suites. `bun run test` runs both suites. Playwright and Bash
+remain the test runners; native Bun test does not replace their fixtures or lifecycle.
+
+Use `bun install --frozen-lockfile` when reproducing the committed dependency graph in CI.
 
 ## Content
 
 All copy and data live in `src/data/`, never in markup:
 
-| File               | Holds                                                       |
-| ------------------ | ----------------------------------------------------------- |
-| `contributions.ts` | The merged upstream pull requests and their write-ups       |
-| `articles.ts`      | Long-form operations notes with source-backed evidence      |
-| `personal-work.ts` | Fork and self-hosted work, labelled separately on purpose   |
-| `site.ts`          | Identity and contact channels                               |
-| `stack.ts`         | Tools, each linked to the contribution that demonstrates it |
-| `copy.ts`          | Page prose                                                  |
-| `ui.ts`            | Navigation and control labels                               |
-| `i18n.ts`          | Locale helpers, `localizePath` / `alternatePath`            |
+| File               | Holds                                                                           |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `contributions.ts` | The merged upstream pull requests and their write-ups                           |
+| `articles.ts`      | Eight complete EN/VI systems articles with section-level source evidence        |
+| `personal-work.ts` | Public repository snapshot, original/fork/derived/profile ownership and sources |
+| `site.ts`          | Identity and contact channels                                                   |
+| `stack.ts`         | Tools linked to merged contributions or public project evidence                 |
+| `copy.ts`          | Page prose                                                                      |
+| `ui.ts`            | Navigation and control labels                                                   |
+| `i18n.ts`          | Locale helpers, `localizePath` / `alternatePath`                                |
 
 Totals such as `+1,503 / −300` are **computed** from `contributions.ts`, so the home page and the
 index cannot disagree. Repository star and fork counts are stamped with `statsAsOf` and rendered
 as a snapshot; they are deliberately not fetched at build time, which would make builds
 non-reproducible and add a network dependency to the Docker build.
+
+The current repository inventory was fetched on **2026-10-23**. External application evidence
+links pin the default-branch commit read during editorial research. Portfolio changes use main-path
+links until the redesigned sources are published. Article dates are writing dates, not repository
+creation dates; reading time is rounded up from each locale's whitespace-delimited content at
+220 words/minute. Profile metadata is not a product, and repository ownership is not a PR metric.
+The ACB repository's current code accepts payment-provider events rather than its historical email
+intake; the article states this source discrepancy explicitly.
 
 Two contact channels are ready but unset: `site.linkedin` and `site.cv` are `null`, and nothing is
 rendered for them. Set `linkedin` to a URL, or drop a PDF at `public/cv.pdf` and set
@@ -45,8 +87,8 @@ rendered for them. Set `linkedin` to a URL, or drop a PDF at `public/cv.pdf` and
 
 ### Adding a contribution
 
-Append to `contributions.ts`. The route, the index row, the totals, the stack links and the test
-suite all follow from the data — `tests/routes.spec.ts` derives its route list from it.
+Append to `contributions.ts`. Routes, index rows, totals and stack links follow from the data.
+`tests/routes.spec.ts` checks the built public sitemap rather than maintaining a second catalogue.
 
 ## Language
 
@@ -58,17 +100,32 @@ and the route files are thin wrappers that pass `lang`.
 Technical strings — commit titles, file names, code fragments, diff figures — stay in English in
 both editions.
 
+The retired `/work/omniroute-vps-workflow` article redirects to
+`/work/blue-green-deploys-on-a-shared-vps/`, with the same mapping under `/vi/`.
+Nginx returns a single HTTP 301 for both trailing-slash forms with a relative `Location`;
+Astro emits a usable static redirect document at the trailing-slash URL for built preview;
+preview itself rejects slashless routes under `trailingSlash: "always"`. Production checks use
+`BASE_URL` to exercise both forms. Only current article URLs belong in the sitemap and canonical links.
+
 ## Design
 
-Fraunces for display type (its `WONK` axis is what makes the letterforms irregular), Newsreader for
-prose, IBM Plex Mono for every number and label. All three are self-hosted and all three include
-the Vietnamese subset.
+Systems Observatory uses Manrope Variable for display, Be Vietnam Pro (400/500/600/700) for
+body copy, and IBM Plex Mono (400/500) for metadata and code. Fontsource full-unicode/per-weight
+entry points preserve `unicode-range` and Vietnamese coverage; all font files are self-hosted.
+Vite asset inlining is disabled so small font subsets remain same-origin files rather than
+`data:` URLs rejected by the production `font-src 'self'` policy.
 
-Import fonts through Fontsource's **per-weight** entry points, not its per-subset files: those omit
-`unicode-range`, so importing several for one weight makes the last one claim every codepoint.
+Light is the complete server-rendered/no-JavaScript edition; dark is a separately designed palette.
+A synchronous head bootstrap reads storage independently from OS-theme detection. The binary
+toggle appears only after initialization, follows OS changes until explicit choice, and retains an
+in-memory override even when storage is denied.
+Its accessible name includes the visible edition label as well as the switch action for voice control.
 
-Light paper is the default and the server-rendered edition; dark is a designed counterpart. A
-blocking script in `<head>` applies the stored choice before paint.
+The homepage's HTML links and orbital SVG carry the complete project meaning. Desktop fine-pointer
+visitors without reduced motion or save-data may load the local renderer near the viewport.
+Mobile and other ineligible visits retain the static composition without downloading Three.js.
+The scene pauses offscreen, in hidden documents, or on user request; eligibility changes, context
+loss, navigation and BFCache restoration are lifecycle boundaries, not reasons to hide content.
 
 ## Regenerating the Open Graph card
 
@@ -76,7 +133,7 @@ blocking script in `<head>` applies the stored choice before paint.
 render an SVG `og:image`, so a PNG is required.
 
 ```bash
-node scripts/make-og.mjs
+bun run og
 ```
 
 ## Production container
