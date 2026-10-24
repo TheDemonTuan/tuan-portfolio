@@ -2,12 +2,9 @@ import type { L10n } from "./i18n";
 
 export interface StackItem {
   readonly name: string;
-  /**
-   * Slug of the contribution that demonstrates this technology in public.
-   * `null` means it is used in private or personal work only — labelled as
-   * such rather than presented alongside the proven entries.
-   */
-  readonly provenance: string | null;
+  readonly provenance:
+    | { readonly kind: "contribution"; readonly slug: string }
+    | { readonly kind: "project"; readonly id: string };
 }
 
 export interface StackGroup {
@@ -21,52 +18,43 @@ export const stack: readonly StackGroup[] = [
     id: "languages",
     label: { en: "Languages", vi: "Ngôn ngữ" },
     items: [
-      { name: "TypeScript", provenance: "sse-ingest-byte-budget" },
-      { name: "JavaScript", provenance: "bun-napi-abort" },
-      { name: "Go", provenance: null },
-      { name: "SQL", provenance: null },
-      { name: "Bash", provenance: null },
+      { name: "TypeScript", provenance: { kind: "contribution", slug: "sse-ingest-byte-budget" } },
+      { name: "JavaScript", provenance: { kind: "contribution", slug: "bun-napi-abort" } },
+      { name: "Go", provenance: { kind: "project", id: "acb-transaction-webhook" } },
+      { name: "SQL", provenance: { kind: "project", id: "facebook-messenger-ai-rep" } },
+      { name: "Bash", provenance: { kind: "project", id: "vps-deploy" } },
     ],
   },
   {
     id: "runtime",
-    label: { en: "Runtime & frameworks", vi: "Runtime & framework" },
+    label: { en: "Runtime & rendering", vi: "Runtime & hiển thị" },
     items: [
-      { name: "Node.js", provenance: "bundler-resolution" },
-      { name: "Bun", provenance: "bun-napi-abort" },
-      { name: "Next.js", provenance: "bundler-resolution" },
-      { name: "NestJS", provenance: null },
-      { name: "Astro", provenance: null },
-      { name: "Prisma", provenance: null },
+      { name: "Node.js", provenance: { kind: "contribution", slug: "bundler-resolution" } },
+      { name: "Bun", provenance: { kind: "contribution", slug: "bun-napi-abort" } },
+      { name: "Next.js", provenance: { kind: "contribution", slug: "bundler-resolution" } },
+      { name: "Astro", provenance: { kind: "project", id: "tuan-portfolio" } },
+      { name: "Three.js", provenance: { kind: "project", id: "tuan-portfolio" } },
     ],
   },
   {
     id: "data",
     label: { en: "Data", vi: "Dữ liệu" },
     items: [
-      { name: "SQLite", provenance: "bun-napi-abort" },
-      { name: "MySQL", provenance: null },
-      { name: "MongoDB", provenance: null },
-      { name: "Redis", provenance: null },
-      { name: "GraphQL", provenance: null },
+      { name: "SQLite", provenance: { kind: "contribution", slug: "bun-napi-abort" } },
+      { name: "PostgreSQL", provenance: { kind: "project", id: "facebook-messenger-ai-rep" } },
     ],
   },
   {
     id: "ops",
-    label: { en: "Operations", vi: "Vận hành" },
+    label: { en: "Infrastructure", vi: "Hạ tầng" },
     items: [
-      { name: "Docker", provenance: "bun-napi-abort" },
-      { name: "Linux / ARM64", provenance: "bun-napi-abort" },
-      { name: "GitHub Actions", provenance: null },
-      { name: "Nginx", provenance: null },
-      { name: "Caddy", provenance: null },
-      { name: "Cloudflare Workers", provenance: null },
-      { name: "Cloudflare Tunnel", provenance: null },
+      { name: "Docker", provenance: { kind: "project", id: "vps-deploy" } },
+      { name: "GitHub Actions", provenance: { kind: "project", id: "vps-deploy" } },
+      { name: "Linux ARM64", provenance: { kind: "project", id: "vps-deploy" } },
+      { name: "Nginx", provenance: { kind: "project", id: "tuan-portfolio" } },
+      { name: "Caddy", provenance: { kind: "project", id: "tuan-portfolio" } },
+      { name: "Cloudflare Workers", provenance: { kind: "project", id: "tuan-uptimeflare" } },
+      { name: "Cloudflare Tunnel", provenance: { kind: "project", id: "tuan-portfolio" } },
     ],
   },
 ];
-
-export const provenLabel: L10n = {
-  en: "Shown in a merged upstream patch",
-  vi: "Có trong một bản vá đã merge upstream",
-};

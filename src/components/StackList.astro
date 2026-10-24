@@ -1,7 +1,9 @@
 ---
 import { localizePath } from "../data/i18n";
 import type { Lang } from "../data/i18n";
-import { provenLabel, stack } from "../data/stack";
+import { personalWork } from "../data/personal-work";
+import { stack } from "../data/stack";
+import { ui } from "../data/ui";
 
 interface Props {
   lang: Lang;
@@ -11,24 +13,34 @@ const { lang } = Astro.props;
 ---
 
 <div data-testid="stack">
-  {
-    stack.map((group) => (
-      <div class="stack-group">
-        <h3 class="label">{group.label[lang]}</h3>
-        <ul class="stack-items">
-          {group.items.map((item) => (
-            <li class:list={[item.provenance ? "is-proven" : "is-quiet"]}>
-              {item.provenance ? (
-                <a href={localizePath(`/work/${item.provenance}/`, lang)} title={provenLabel[lang]}>
-                  {item.name}
-                </a>
-              ) : (
-                item.name
-              )}
+  {stack.map((group) => (
+    <div class="stack-group">
+      <h3 class="label">{group.label[lang]}</h3>
+      <ul class="stack-items">
+        {group.items.map((item) => {
+          const source = item.provenance;
+          const project =
+            source.kind === "project" ? personalWork.find((entry) => entry.id === source.id) : null;
+          const href =
+            source.kind === "contribution"
+              ? localizePath(`/work/${source.slug}/`, lang)
+              : project?.url;
+          if (!href) throw new Error(`Unresolved stack provenance: ${item.name}`);
+          return (
+            <li>
+              <a href={href}>
+                <span>{item.name}</span>
+                <small>
+                  {source.kind === "contribution"
+                    ? ui.contributionSource[lang]
+                    : ui.projectSource[lang]}
+                  {project ? ` · ${project.title}` : ""}
+                </small>
+              </a>
             </li>
-          ))}
-        </ul>
-      </div>
-    ))
-  }
+          );
+        })}
+      </ul>
+    </div>
+  ))}
 </div>

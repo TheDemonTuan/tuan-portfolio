@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { ui } from "../src/data/ui";
 
 test.describe("accessibility", () => {
   test("the skip link is the first tab stop and moves focus into the main region", async ({
@@ -16,24 +15,22 @@ test.describe("accessibility", () => {
 
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/#main-content$/);
+    await expect(page.locator("main#main-content")).toBeFocused();
   });
 
-  test("landmarks are labelled from the shared strings, not from hardcoded copy", async ({
+  test("theme accessible names include the visible voice-control label in both editions", async ({
     page,
   }) => {
-    await page.goto("/");
-    await expect(page.getByRole("navigation", { name: ui.mainNav.en })).toBeVisible();
-
-    await page.goto("/vi/");
-    await expect(page.getByRole("navigation", { name: ui.mainNav.vi })).toBeVisible();
-  });
-
-  test("the theme control is a real button with a described state", async ({ page }) => {
-    await page.goto("/");
-    const toggle = page.getByTestId("theme-toggle");
-    await expect(toggle).toHaveRole("button");
-    await expect(toggle).toHaveAttribute("aria-label", /.+/);
-    await expect(toggle).toHaveAttribute("aria-pressed", /true|false/);
+    for (const path of ["/", "/vi/"]) {
+      await page.goto(path);
+      const toggle = page.getByTestId("theme-toggle");
+      for (let theme = 0; theme < 2; theme++) {
+        await expect(toggle).toHaveAccessibleName(
+          new RegExp(RegExp.escape(await toggle.innerText())),
+        );
+        await toggle.click();
+      }
+    }
   });
 
   test("the current section is marked in the masthead", async ({ page }) => {
@@ -48,7 +45,7 @@ test.describe("accessibility", () => {
     // server's injected toolbar, whose icons are not ours to assert on.
     const unlabelled = await page
       .locator(
-        ".masthead svg:not([aria-hidden='true']), main#main-content svg:not([aria-hidden='true'])",
+        "header svg:not([aria-hidden='true']), main#main-content svg:not([aria-hidden='true'])",
       )
       .count();
     expect(unlabelled).toBe(0);

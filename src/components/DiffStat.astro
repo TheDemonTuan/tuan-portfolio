@@ -10,5 +10,5 @@ const format = (value: number) => value.toLocaleString("en-US");
 ---
 
 <span class:list={["diff", size === "lg" && "diff--lg"]}>
-  <ins>+{format(additions)}</ins>{" "}<del>−{format(deletions)}</del>
+  <ins>+{format(additions)}</ins> <del>−{format(deletions)}</del>
 </span>

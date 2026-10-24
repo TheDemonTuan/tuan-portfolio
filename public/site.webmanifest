@@ -1,12 +1,12 @@
 {
-  "name": "Nguyễn Viết Tuấn — Portfolio",
+  "name": "Nguyễn Viết Tuấn — Systems Observatory",
   "short_name": "NVT",
   "id": "/",
   "lang": "en",
-  "description": "Backend developer in Hanoi. Merged upstream patches, with the diffs attached.",
+  "description": "Backend systems, AI workflows and source-backed engineering notes. A bilingual portfolio from Hanoi.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f3f0e9",
-  "theme_color": "#f3f0e9",
+  "background_color": "#080D16",
+  "theme_color": "#080D16",
   "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
 }

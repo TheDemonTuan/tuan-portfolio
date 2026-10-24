@@ -8,7 +8,6 @@ import { articles } from "../data/articles";
 import {
   AREA_LABEL,
   allPullRequests,
-  contributionBySlug,
   contributions,
   OMNIROUTE,
   prUrl,
@@ -17,7 +16,7 @@ import {
 import { work } from "../data/copy";
 import { localizePath } from "../data/i18n";
 import type { Lang } from "../data/i18n";
-import { KIND_LABEL, personalWork } from "../data/personal-work";
+import { KIND_LABEL, personalWork, repositorySnapshot } from "../data/personal-work";
 import { ui } from "../data/ui";
 
 interface Props {
@@ -25,164 +24,190 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const n = (value: number) => value.toLocaleString("en-US");
+const projects = personalWork.filter((project) => project.kind !== "profile");
+const profiles = personalWork.filter((project) => project.kind === "profile");
+const n = (value: number) => value.toLocaleString(lang === "vi" ? "vi-VN" : "en-US");
 ---
 
-<section class="hero page">
-  <div class="railed">
-    <div class="rail">
-      <dl class="specs" style="margin: 0">
-        <dt>Repo</dt>
-        <dd>
-          <a href={OMNIROUTE.url} target="_blank" rel="noreferrer">{OMNIROUTE.name}</a>
-        </dd>
-        <dt>Owner</dt>
-        <dd>{OMNIROUTE.repo.split("/")[0]}</dd>
-        <dt>License</dt>
-        <dd>{OMNIROUTE.license}</dd>
-        <dt>Stars</dt>
-        <dd>{n(OMNIROUTE.stars)}</dd>
-        <dt>Forks</dt>
-        <dd>{n(OMNIROUTE.forks)}</dd>
-        <dt>People</dt>
-        <dd>{OMNIROUTE.contributors}</dd>
-        <dt>{ui.asOf[lang]}</dt>
-        <dd>{OMNIROUTE.statsAsOf}</dd>
-      </dl>
+<section class="page-hero page">
+  <div class="page-hero__copy">
+    <p class="label">{ui.nav.work[lang]}</p>
+    <h1>{work.headline[lang]}</h1>
+    <p class="lede">{work.lede[lang]}</p>
+    <nav class="section-nav" aria-label={ui.nav.work[lang]}>
+      <a href="#writing">{ui.writing[lang]}</a>
+      <a href="#projects">{ui.projects[lang]}</a>
+      <a href="#contributions">{ui.contributions[lang]}</a>
+    </nav>
+  </div>
+  <svg
+    class="orbital-motif page-hero__motif"
+    viewBox="0 0 480 400"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M40 200h400M240 32v336" />
+    <ellipse cx="240" cy="200" rx="198" ry="74" transform="rotate(-24 240 200)" />
+    <ellipse cx="240" cy="200" rx="148" ry="108" transform="rotate(32 240 200)" />
+    <ellipse cx="240" cy="200" rx="88" ry="148" transform="rotate(38 240 200)" />
+    <path d="m240 146 48 28v54l-48 28-48-28v-54zm0 0v56m-48-28 48 28 48-28m-48 28v54" />
+    <circle cx="72" cy="274" r="8" />
+    <circle cx="396" cy="110" r="8" />
+    <circle cx="286" cy="338" r="8" />
+  </svg>
+</section>
+
+{articles.length > 0 && (
+  <section class="section page" id="writing" aria-labelledby="writing-title">
+    <SectionHead mark="01" title={ui.writing[lang]} id="writing-title" />
+    <p class="section-note">{work.writingNote[lang]}</p>
+    <div class="article-list">
+      {articles.map((article) => (
+        <ArticleEntry article={article} lang={lang} />
+      ))}
     </div>
+  </section>
+)}
 
-    <div>
-      <h1>{work.headline[lang]}</h1>
-      <p class="lede" style="margin-top: var(--s-5)">
-        {
-          lang === "vi"
-            ? "Ghi chép vận hành, project tự xây và các lần truy vết đã trở thành pull request upstream. Đọc bài tổng quan trước, hoặc đi thẳng vào diff."
-            : "Operations notes, self-built projects and investigations that became upstream pull requests. Start with the field note, or go straight to the diffs."
-        }
-      </p>
-      <p class="marginalia" style="margin-top: var(--s-5)">{work.scopeNote[lang]}</p>
-    </div>
-  </div>
-</section>
-
-<section class="section page" aria-labelledby="notes">
-  <SectionHead mark="01" title={lang === "vi" ? "Bài viết" : "Field notes"} id="notes" />
-  <div class="article-list">
-    {articles.map((article) => <ArticleEntry article={article} lang={lang} featured />)}
-  </div>
-</section>
-
-<section class="section page" aria-labelledby="investigations">
-  <SectionHead
-    mark="02"
-    title={lang === "vi" ? "Các lần truy vết" : "Investigations"}
-    id="investigations"
-  />
-  <p class="section-note">
-    {
-      lang === "vi"
-        ? "Ba case study được viết theo cùng một nhịp: triệu chứng, nguyên nhân gốc, thay đổi và bằng chứng."
-        : "Three case studies follow one rhythm: symptom, root cause, change and evidence."
-    }
-  </p>
-  <div class="entries">
-    {contributions.map((contribution) => <ContribEntry contribution={contribution} lang={lang} />)}
-  </div>
-</section>
-
-<section class="section page" aria-labelledby="merged">
-  <SectionHead mark="03" title={ui.merged[lang]} id="merged" />
-
-  <div class="table-wrap">
-    <table data-testid="pr-table">
-      <caption>
-        {totals.prs} pull requests · {totals.files} files · +{n(totals.additions)} / −{
-          n(totals.deletions)
-        }
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">{ui.table.pr[lang]}</th>
-          <th scope="col">{ui.table.merged[lang]}</th>
-          <th scope="col">{ui.table.area[lang]}</th>
-          <th scope="col">{ui.table.change[lang]}</th>
-          <th scope="col">{ui.table.diff[lang]}</th>
-          <th scope="col">{ui.table.files[lang]}</th>
-          <th scope="col"><span class="visually-hidden">{ui.table.link[lang]}</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          allPullRequests.map((pr) => (
-            <tr data-testid="pr-row">
-              <th scope="row">#{pr.number}</th>
-              <td>{pr.mergedAt}</td>
-              <td>{AREA_LABEL[pr.area][lang]}</td>
-              <td>
-                <a class="commit" href={localizePath(`/work/${pr.slug}/`, lang)}>
-                  {pr.title}
+{personalWork.length > 0 && (
+  <section class="section page" id="projects" aria-labelledby="projects-title">
+    <SectionHead mark="02" title={work.personalTitle[lang]} id="projects-title" />
+    <p class="section-note">{work.personalNote[lang]}</p>
+    <p class="source-note">
+      {ui.snapshot[lang]} · <time datetime={repositorySnapshot}>{repositorySnapshot}</time>
+    </p>
+    <div data-testid="personal-work">
+      {projects.length > 0 && (
+        <div class="project-grid">
+          {projects.map((project) => (
+            <article class="project-card">
+              <div class="project-card__meta">
+                <span class="label">{KIND_LABEL[project.kind][lang]}</span>
+                <span class="mono">{project.year}</span>
+              </div>
+              <h3>
+                <a href={project.url} target="_blank" rel="noreferrer">
+                  {project.title}
+                  <Icon name="arrow-up-right" size={16} />
                 </a>
-              </td>
-              <td>
-                <DiffStat additions={pr.additions} deletions={pr.deletions} />
-              </td>
-              <td>{pr.files}</td>
-              <td>
-                <a
-                  href={prUrl(pr.number)}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={`${ui.viewPullRequest[lang]} #${pr.number}`}
-                >
-                  <Icon name="arrow-up-right" size={14} />
+              </h3>
+              <p>{project.summary[lang]}</p>
+              <ul class="tags">
+                {project.tech.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              {project.upstream && (
+                <p class="project-card__upstream">
+                  <a href={project.upstream} target="_blank" rel="noreferrer">
+                    {ui.upstream[lang]}: {project.upstream.replace("https://github.com/", "")}
+                  </a>
+                </p>
+              )}
+              <div class="project-card__links">
+                <a href={project.evidenceUrl} target="_blank" rel="noreferrer">
+                  {ui.source[lang]}
+                  <Icon name="arrow-up-right" size={15} />
                 </a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <div class="stack-6" style="margin-top: var(--s-8)">
-    {
-      [...new Set(allPullRequests.map((pr) => pr.slug))].map((slug) => {
-        const contribution = contributionBySlug(slug);
-        return (
-          <p>
-            <a class="link-mono" href={localizePath(`/work/${slug}/`, lang)}>
-              {contribution.headline[lang]}
-              <Icon name="arrow" />
-            </a>
+                {project.articleSlug && (
+                  <a href={localizePath(`/work/${project.articleSlug}/`, lang)}>
+                    {ui.relatedArticle[lang]}
+                    <Icon name="arrow" size={15} />
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+      {profiles.map((profile) => (
+        <article class="profile-entry">
+          <p class="label">
+            {KIND_LABEL[profile.kind][lang]} · {ui.profile[lang]}
           </p>
-        );
-      })
-    }
-  </div>
-</section>
+          <h3>
+            <a href={profile.url} target="_blank" rel="noreferrer">
+              {profile.title}
+              <Icon name="arrow-up-right" size={16} />
+            </a>
+          </h3>
+          <p>{profile.summary[lang]}</p>
+          <p class="muted">{work.profileNote[lang]}</p>
+          <a class="source-link" href={profile.evidenceUrl} target="_blank" rel="noreferrer">
+            {ui.source[lang]}
+            <Icon name="arrow-up-right" size={15} />
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
 
-<section class="section page" aria-labelledby="own">
-  <SectionHead mark="04" title={work.personalTitle[lang]} id="own" />
-
-  <dl class="specs" data-testid="personal-work">
-    {
-      personalWork.map((project) => (
-        <>
-          <dt>{KIND_LABEL[project.kind][lang]}</dt>
-          <dd>
-            {project.url ? (
-              <a href={project.url} target="_blank" rel="noreferrer">
-                {project.title}
-              </a>
-            ) : (
-              project.title
-            )}
-            <span class="muted"> · {project.year}</span>
-            <br />
-            <span class="muted">{project.summary[lang]}</span>
-          </dd>
-        </>
-      ))
-    }
-  </dl>
-</section>
+{contributions.length > 0 && (
+  <section class="section page" id="contributions" aria-labelledby="contributions-title">
+    <SectionHead mark="03" title={ui.contributions[lang]} id="contributions-title" />
+    <p class="section-note">{work.scopeNote[lang]}</p>
+    <p class="source-note">
+      <a href={OMNIROUTE.url} target="_blank" rel="noreferrer">
+        {OMNIROUTE.name}
+      </a>{" "}
+      · {ui.contributionSource[lang]} · {ui.asOf[lang]}{" "}
+      <time datetime={OMNIROUTE.statsAsOf}>{OMNIROUTE.statsAsOf}</time>
+    </p>
+    <div class="contrib-grid">
+      {contributions.map((item) => (
+        <ContribEntry contribution={item} lang={lang} />
+      ))}
+    </div>
+    {allPullRequests.length > 0 && (
+      <div class="table-wrap">
+        <table data-testid="pr-table">
+          <caption>{`${n(totals.prs)} ${ui.merged[lang]} ${ui.pullRequests[lang]} · ${n(totals.files)} ${ui.files[lang]} · +${n(totals.additions)} / −${n(totals.deletions)}`}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{ui.table.pr[lang]}</th>
+              <th scope="col">{ui.table.merged[lang]}</th>
+              <th scope="col">{ui.table.area[lang]}</th>
+              <th scope="col">{ui.table.change[lang]}</th>
+              <th scope="col">{ui.table.diff[lang]}</th>
+              <th scope="col">{ui.table.files[lang]}</th>
+              <th scope="col">
+                <span class="visually-hidden">{ui.table.link[lang]}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {allPullRequests.map((pr) => (
+              <tr data-testid="pr-row">
+                <th scope="row">#{pr.number}</th>
+                <td>
+                  <time datetime={pr.mergedAt}>{pr.mergedAt}</time>
+                </td>
+                <td>{AREA_LABEL[pr.area][lang]}</td>
+                <td>
+                  <a class="commit" href={localizePath(`/work/${pr.slug}/`, lang)}>
+                    {pr.title}
+                  </a>
+                </td>
+                <td>
+                  <DiffStat additions={pr.additions} deletions={pr.deletions} />
+                </td>
+                <td>{pr.files}</td>
+                <td>
+                  <a
+                    href={prUrl(pr.number)}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${ui.viewPullRequest[lang]} #${pr.number}`}
+                  >
+                    <Icon name="arrow-up-right" size={16} />
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </section>
+)}

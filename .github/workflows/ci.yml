@@ -21,20 +21,19 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 24
-          cache: npm
+          bun-version: 1.4.4
       - name: Install locked dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
       - name: Check types and formatting
-        run: npm run check
+        run: bun run check
       - name: Build production site
-        run: npm run build
+        run: bun run build
       - name: Install test browser
-        run: npx --no-install playwright install --with-deps chromium
+        run: bun ./node_modules/playwright/cli.js install --with-deps chromium
       - name: Run browser and deployment regression tests
-        run: npm test
+        run: bun run test
 
   required:
     name: Required CI

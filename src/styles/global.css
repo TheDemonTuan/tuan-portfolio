@@ -1,20 +1,12 @@
-/*
- * Self-hosted. The content security policy allows no third-party font origin,
- * so every face here is served from this site.
- *
- * These must be the per-weight entry points, not Fontsource's per-subset files
- * (`latin-400.css`, `vietnamese-400.css`, …). Those omit `unicode-range`, so
- * importing several of them for one weight makes the last one win every
- * codepoint — the Vietnamese face would be asked to render Latin text it does
- * not contain, and all mono type would silently fall back to a system font.
- */
-@import "@fontsource-variable/fraunces/wonk.css";
-@import "@fontsource-variable/fraunces/wonk-italic.css";
-@import "@fontsource-variable/newsreader/wght.css";
-@import "@fontsource-variable/newsreader/wght-italic.css";
+/* Full per-weight entrypoints preserve unicode-range and Vietnamese coverage.
+   All fonts are self-hosted under the existing same-origin CSP. */
+@import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource/be-vietnam-pro/400.css";
+@import "@fontsource/be-vietnam-pro/500.css";
+@import "@fontsource/be-vietnam-pro/600.css";
+@import "@fontsource/be-vietnam-pro/700.css";
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
-@import "@fontsource/ibm-plex-mono/600.css";
 
 @import "./tokens.css";
 @import "./base.css";
