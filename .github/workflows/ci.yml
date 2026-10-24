@@ -32,7 +32,7 @@ jobs:
         run: bun run build
       - name: Install test browser
         run: bun ./node_modules/playwright/cli.js install --with-deps chromium
-      - name: Run browser and deployment regression tests
+      - name: Run browser regression tests
         run: bun run test
 
   required:

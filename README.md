@@ -6,8 +6,8 @@ with a local, progressively enhanced Three.js scene; no client framework or live
 
 ## Local development
 
-Requires Bun 1.4.4 or newer, Bash for the shell regression suites, and Docker for the production
-image. The project pins Bun 1.4.4 for reproducible development and CI.
+Requires Bun 1.4.4 or newer and Docker for the production image. The project pins Bun 1.4.4
+for reproducible development and CI.
 
 ```bash
 bun install
@@ -47,9 +47,8 @@ the real runtime identity without a Node fallback or dependency patches.
 
 `bun run test:browser` runs the three Playwright projects (desktop-wide, desktop, and mobile)
 against the built preview. Set `BASE_URL` to test an already-running deployment instead; Playwright
-then does not start a local server. `bun run test:shell` runs the Bash deployment, image-retention,
-and edge-configuration regression suites. `bun run test` runs both suites. Playwright and Bash
-remain the test runners; native Bun test does not replace their fixtures or lifecycle.
+then does not start a local server. `bun run test` runs this browser suite. Deployment-engine,
+route-publication and host-isolation tests belong to the deployment platform, not this application.
 
 Use `bun install --frozen-lockfile` when reproducing the committed dependency graph in CI.
 
@@ -138,57 +137,96 @@ bun run og
 
 ## Production container
 
+The image builds the Astro site with Bun and serves static files with unprivileged Nginx on
+port `8080`. A small compiled supervisor supplies the deployment health contract and supervises
+Nginx; it is not an application server and does not render pages. Production runs read-only,
+with capabilities dropped, `no-new-privileges`, bounded resources and writable temporary storage.
+The platform owns the production container configuration and private ingress; the application
+does not publish a production host port.
+
+For a local container check, build and bind only to loopback:
+
 ```bash
-docker network inspect edge-portfolio
-docker compose up -d
-EDGE_HOST=tuannguyenviet.site scripts/edge-smoke.sh
+docker build -t tuan-portfolio:local .
+docker run --rm -d --name portfolio-local --read-only --cap-drop ALL \
+  --security-opt no-new-privileges:true --tmpfs /tmp:rw,nosuid,nodev,size=32m,mode=1777 \
+  --tmpfs /var/cache/nginx:rw,noexec,nosuid,size=16m,uid=101,gid=101 \
+  -e DEPLOY_SLOT=blue -p 127.0.0.1:8088:8080 tuan-portfolio:local
+curl --fail http://127.0.0.1:8088/healthz
+BASE_URL=http://127.0.0.1:8088 bun run test:browser
+docker stop portfolio-local
 ```
 
-The external `edge-portfolio` network and shared edge stack must exist before starting the production Compose file.
+`DEPLOY_SLOT` is required and must be `blue` or `green`; production supplies it through the
+platform. A successful `/healthz` response is uncached JSON with `ok: true`, the
+`deployment_slot`, an `instance_id` in `<hostname>-<positive decimal>` form,
+`active_requests_known: true`, and an integer `active_requests`. Activity is a conservative
+Nginx connection observation, excluding the two connections used by the health probe itself;
+idle keepalive connections remain counted rather than being declared drained early. An unavailable
+or inconsistent observation returns HTTP 503 with unknown activity, never a fabricated zero.
+Nginx's status endpoint and the supervisor listener remain container-local.
 
-The production site container publishes no host port. The VPS-wide Cloudflare Tunnel connector
-reaches one shared Caddy gateway; that gateway proxies `tuannguyenviet.site` to the stable Docker
-alias `portfolio-web:8080` on the internal `edge-portfolio` network. The portfolio repository owns
-only the application container, while `/opt/edge` owns the single connector and gateway used by
-all migrated applications. See `EDGE_INGRESS_RULES.md` for the convention used by other repos.
-
-`nginx.conf` sets `absolute_redirect off` — without it, the redirect from `/work` to `/work/`
-would be built from the container's own host and port and leak an internal address through the
-tunnel. Its content security policy allows no third-party origin for scripts, styles or fonts.
+`nginx.conf` keeps `absolute_redirect off` so redirects cannot leak an internal host or port.
+The content security policy permits no third-party script, style or font origin. Static assets,
+real 404 responses and the legacy article redirects remain Nginx responsibilities.
 
 ## Continuous deployment
 
 Every push to `main` runs `.github/workflows/deploy.yml`:
 
-1. Type-check and build the static site.
-2. Build the ARM64 container on a native GitHub runner.
-3. Publish `ghcr.io/thedemontuan/tuan-portfolio` to GitHub Container Registry.
-4. Deploy the immutable image digest to `/opt/tuan-portfolio` over SSH.
-5. Stage deployment files after confirming the shared Caddy, connector, and `edge-portfolio` network exist.
-6. Recreate only the portfolio service and verify its health through the shared Caddy ingress.
+1. Install the locked dependencies, check types and formatting, build the site, and run browser tests.
+2. Call the exact-commit-pinned `vps-deploy` reusable `build-docker.yml` workflow. It validates
+   the registered caller and `.deploy/app.yml`, builds natively for `linux/arm64`, and publishes
+   `ghcr.io/thedemontuan/tuan-portfolio` with an immutable digest.
+3. In the protected `production` environment, pass that digest to the pinned platform deploy action
+   for app `tuan-portfolio` on host `oracle-main`.
+4. The host-owned engine validates the request and runs blue-green candidate health, route
+   publication/acknowledgement and old-slot draining. Candidate health has a 60-second bound;
+   route acknowledgement has a 30-second bound.
 
-The shared connector token is stored only as `/opt/edge/secrets/tunnel-token` with mode `0600`; it
-is never committed or copied by the application deployment workflow. The `production` GitHub environment holds
-`VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and `VPS_KNOWN_HOSTS`. The workflow uses the
-short-lived `GITHUB_TOKEN` for each image pull and logs the VPS out of GitHub Container Registry
-afterward.
+Manual dispatch with `skip_deploy: true` runs the same test/build/publish path but never submits
+a deployment request or acquires production deployment credentials. Updating the platform revision
+requires changing both `uses` pins and both matching `platform-ref` inputs together, after the
+registered app and host release have been enrolled. The manifest must exactly match the platform
+registration; it is not an unrestricted Compose configuration.
 
-The production Compose file reads `PORTFOLIO_IMAGE` from `/opt/tuan-portfolio/.deploy.env`.
-`scripts/deploy.sh` serializes deploys with `flock`, rejects mutable image references, records the
-active and previous healthy digests, rolls back when a replacement fails, and removes older
-portfolio images only after a successful health check. It never runs a host-wide image or builder
-prune.
+### Production environment configuration
 
-Public routing must use a portfolio-owned ingress with separate credentials and lifecycle. Never
-attach this Compose project to another application's Docker network, proxy, or tunnel connector.
+Configure only `DEPLOY_SSH_KEY` in GitHub's `production` environment: the dedicated key enrolled
+for the forced-command `deploy-tuan-portfolio` account, never a general-purpose administrator key.
+The registered `oracle-main` inventory supplies the SSH address and port; the transport derives
+the account name from the app ID and pins and verifies the registered host fingerprint. The caller
+does not supply `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER` or `VPS_KNOWN_HOSTS` overrides.
 
-## Rollback
+The reusable builder uses `GITHUB_TOKEN` with `packages: write` for publication. Host registry
+access, if needed, is managed by platform enrollment, not a caller SSH login or forwarded GitHub token.
 
-Deployments roll back automatically when the replacement container fails its local health check.
-For a manual rollback, redeploy an earlier immutable digest with `scripts/deploy.sh`. Removing the
-portfolio uses its own Compose project only:
+### Ownership and migration
 
-```bash
-cd /opt/tuan-portfolio
-docker compose --env-file .deploy.env down
-```
+[vps-deploy](https://github.com/TheDemonTuan/vps-deploy) owns the registered adapter, production
+Compose configuration, host profile, route generation, ingress policy, enrollment and recovery.
+The application owns its image, Nginx/static security, runtime health contract and manifest.
+The caller submits only bounded platform operations: it does not copy files to the VPS, execute
+arbitrary remote shell commands, manage Caddy or Cloudflare credentials, or prune host images.
+
+This replaces the former raw-SSH/Compose/Caddy delivery path. The old application Compose file,
+deployment and image-retention scripts, edge scripts and infrastructure, edge runbook and their
+three shell regression suites have been removed. After the platform cutover is accepted, retire
+the old `VPS_HOST`, `VPS_PORT`, `VPS_USER`, `VPS_SSH_KEY`, and `VPS_KNOWN_HOSTS` environment secrets
+and obsolete `BUILD_RUNNER`/`DEPLOY_PLATFORM` variables. Revoke the old deploy key on the host;
+deleting a GitHub secret alone does not revoke access. Host resource retirement must be coordinated
+by the platform operator without removing networks or ingress still serving other applications.
+
+The source-backed portfolio articles retain their historical Caddy architecture evidence. Those
+editorial snapshots are not current operating instructions; this section and the registered
+platform release describe the deployment boundary after migration.
+
+## Recovery
+
+Use the registered platform's `status`, `reconcile` and `rollback` operations through its approved
+operator procedure; see the [platform operations documentation](https://github.com/TheDemonTuan/vps-deploy#readme).
+Do not revive the retired deployment script or manually modify shared routes. The engine owns
+per-app locking, candidate failure recovery and route acknowledgements. A disconnected CI transport
+does not cancel detached host work: inspect its status before requesting another operation.
+Old-slot cleanup depends on known activity reaching zero; unknown activity must not be treated
+as a successful drain. Rollback is a traffic/image operation, not a guarantee of data restoration.
