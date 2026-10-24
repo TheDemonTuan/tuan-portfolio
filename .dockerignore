@@ -10,5 +10,3 @@ npm-debug.log*
 **/.deploy.env
 **/.deployed-image
 **/.previous-image
-infra
-EDGE_INGRESS_RULES.md

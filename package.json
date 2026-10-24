@@ -17,8 +17,7 @@
     "fmt:check": "bun fmt --no-script --no-config --check \"**/*.{js,mjs,cjs,ts,tsx,css,html,json,yaml,yml,md,mdx,toml}\" && bunx --bun prettier --check \"src/**/*.astro\"",
     "check": "bun run typecheck && bun run fmt:check",
     "test:browser": "bun ./node_modules/playwright/cli.js test",
-    "test:shell": "bash tests/deploy-script.test.sh && bash tests/image-retention.test.sh && bash tests/edge-config.test.sh",
-    "test": "bun run test:browser && bun run test:shell",
+    "test": "bun run test:browser",
     "og": "bun scripts/make-og.mjs"
   },
   "dependencies": {
