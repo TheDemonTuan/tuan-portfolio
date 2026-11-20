@@ -10,7 +10,7 @@ WORKDIR /src
 COPY runtime/health/ ./
 RUN go test ./... && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /portfolio-runtime .
 
-FROM nginx/nginx-unprivileged:1.30.6-alpine@sha256:517607ae849a46afbd400616a783e4ead0290f52d20ccc0618ccea1a49362474
+FROM nginx/nginx-unprivileged:1.30.6-alpine@sha256:ea4fd7ab5a8dc6348c18240bd3546f355f8373cd8f112580f7d8bd8ff5a74772
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=runtime-build /portfolio-runtime /usr/local/bin/portfolio-runtime
 COPY --from=build --chown=101:101 /app/dist /usr/share/nginx/html
